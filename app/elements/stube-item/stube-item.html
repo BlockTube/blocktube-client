@@ -93,6 +93,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
         properties: {
+          web3: {
+            type: Object,
+            observer: '_web3'
+          },
+          contract: {
+            type: String,
+            observer: '_contract'
+          },
           title: {
             type: String,
             value: 'Loading ipfs',
@@ -114,7 +122,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           thumb: {
             type: String,
             value: ''
-
           },
           duration: {
             type: Number,
@@ -133,6 +140,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           observer: '_likebutton',
           value: false
+        },
+        contractabi: {
+          type: Object,
+          value: [{"constant":true,"inputs":[],"name":"treshold","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[],"name":"kill","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"percentageforowner","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"type":"function"},{"constant":true,"inputs":[],"name":"shareholdersnum","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"shareholders","outputs":[{"name":"addr","type":"address"},{"name":"shares","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"tokenaddr","outputs":[{"name":"","type":"address"}],"type":"function"},{"constant":true,"inputs":[],"name":"Token","outputs":[{"name":"","type":"address"}],"type":"function"},{"constant":false,"inputs":[{"name":"_liker","type":"address"},{"name":"_likeamount","type":"uint256"}],"name":"blocktubeTransfer","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"remainingCliptokens","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"ipfsclipobject","outputs":[{"name":"","type":"string"}],"type":"function"},{"inputs":[{"name":"_ipfsclipobject","type":"string"},{"name":"_treshold","type":"uint256"},{"name":"_percentageforowner","type":"uint256"}],"type":"constructor"}]
         }
 
         },
@@ -147,7 +158,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log('Like? ', this.likebutton);
         },
 
-    
+        _contract: function(){
+          console.log('got contract: ', this.contract);
+        },
+
+        _web3: function(){
+          if(this.contract){
+            var myclipContract = this.web3.eth.contract(this.contractabi);
+            var myclipContractInstance = myclipContract.at(this.contract);
+            this.hash = myclipContractInstance.ipfsclipobject().toString();
+            console.log('HASH!',this.hash);
+            this.attached();
+          }
+        },
 
         attached: function() {
 
@@ -169,10 +192,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               })
               .on('end', function() {
                 var ipfsData = JSON.parse(buf);
-                self.title = ipfsData.title;
+                self.title = ipfsData.name;
                 self.description = ipfsData.description;
                 self.duration = ipfsData.duration;
-                self.videohash = ipfsData.hash;
+                self.videohash = ipfsData.video;
                 self.videourl = '';
               });
           });
