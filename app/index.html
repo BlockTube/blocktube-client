@@ -84,7 +84,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-toolbar>
 
         <!-- Drawer Content -->
-        <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
+        <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]" class="vertical layout">
           <a data-route="home" href="/" on-click="onDataRouteClick">
             <iron-icon icon="home"></iron-icon>
             <span>Home</span>
@@ -98,6 +98,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <a data-route="contact" href="/contact" on-click="onDataRouteClick">
             <iron-icon icon="mail"></iron-icon>
             <span>Contact</span>
+          </a>
+
+           <a data-route="record" href="/record" on-click="onDataRouteClick">
+            <iron-icon icon="mail"></iron-icon>
+            <span>record</span>
           </a>
         </paper-menu>
       </paper-scroll-header-panel>

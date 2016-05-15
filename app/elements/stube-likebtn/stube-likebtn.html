@@ -85,11 +85,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             } else {
               self.transactionlog('Transaction success: ', txhash);
               console.log('Tx hash=', txhash);
-              self.setvoted();
               // this triggers the locals-contractlistener component
               self.txhash = txhash;
             }
-
             self.transactionlog('Your like has been added to the blockchain');
           });
       });

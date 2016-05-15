@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/ipfs-upload/ipfs-upload.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 
 
 
@@ -39,10 +40,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 VA
-    <video id="myVideo" ></video>
+    <video id="myVideo" autoplay="true"></video>
+    <paper-icon-button icon="add" on-tap="initrecorder" hidden="{{recorderinit}}"></paper-icon-button>
 VB
 
-    <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
+    <ipfs-upload hidefileinput id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
     <template is="dom-if" if="{{ipfs_uploading}}">
       <span>Uploading</span>
     </template>
@@ -54,6 +56,8 @@ VB
     <paper-input label="Description" bind-value="{{description}}"></paper-input>
     <paper-button raised on-tap="upload">upload</paper-button>
   </template>
+  <script src="../../scripts/whammy.min.js"></script>
+
   <script>
   (function() {
     'use strict';
@@ -85,22 +89,28 @@ VB
       },
 
       ready: function() {
+        this.recorderinit = false;
+      },
+
+      attached: function(){
+       
+      },
+
+      initrecorder: function(){
         if (!window.URL) {
           window.URL = window.URL || window.webkitURL || window.msURL || window.oURL;
         }
         if (!navigator.getUserMedia) {
           navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
         }
-      },
-
-      attached: function(){
-        var self = this;
+         var self = this;
         navigator.getUserMedia({
                 //audio: self.audio,
                 video: true
             },
             function(stream) {
                 self.$.myVideo.src = window.URL.createObjectURL(stream);
+                 self.recorderinit = true;
             },
             function(err) {
                 throw Error(err);
@@ -234,5 +244,101 @@ VB
 
     });
   })();
+
+  function record() {
+  var elapsedTime = $('#elasped-time');
+  var ctx = canvas.getContext('2d');
+  var CANVAS_HEIGHT = canvas.height;
+  var CANVAS_WIDTH = canvas.width;
+
+  frames = []; // clear existing frames;
+  startTime = Date.now();
+
+  toggleActivateRecordButton();
+  $('#stop-me').disabled = false;
+
+  function drawVideoFrame_(time) {
+    rafId = requestAnimationFrame(drawVideoFrame_);
+
+    ctx.drawImage(video, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    document.title = 'Recording...' + Math.round((Date.now() - startTime) / 1000) + 's';
+
+    // Read back canvas as webp.
+    //console.time('canvas.dataURL() took');
+    var url = canvas.toDataURL('image/webp', 1); // image/jpeg is way faster :(
+    //console.timeEnd('canvas.dataURL() took');
+    frames.push(url);
+ 
+    // UInt8ClampedArray (for Worker).
+    //frames.push(ctx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data);
+
+    // ImageData
+    //frames.push(ctx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT));
+  };
+
+  rafId = requestAnimationFrame(drawVideoFrame_);
+};
+
+function stop() {
+  cancelAnimationFrame(rafId);
+  endTime = Date.now();
+  $('#stop-me').disabled = true;
+  document.title = ORIGINAL_DOC_TITLE;
+
+  toggleActivateRecordButton();
+
+  console.log('frames captured: ' + frames.length + ' => ' +
+              ((endTime - startTime) / 1000) + 's video');
+
+  embedVideoPreview();
+};
+
+function embedVideoPreview(opt_url) {
+  var url = opt_url || null;
+  var video = $('#video-preview video') || null;
+  var downloadLink = $('#video-preview a[download]') || null;
+
+  if (!video) {
+    video = document.createElement('video');
+    video.autoplay = true;
+    video.controls = true;
+    video.loop = true;
+    //video.style.position = 'absolute';
+    //video.style.top = '70px';
+    //video.style.left = '10px';
+    video.style.width = canvas.width + 'px';
+    video.style.height = canvas.height + 'px';
+    $('#video-preview').appendChild(video);
+    
+    downloadLink = document.createElement('a');
+    downloadLink.download = 'capture.webm';
+    downloadLink.textContent = '[ download video ]';
+    downloadLink.title = 'Download your .webm video';
+    var p = document.createElement('p');
+    p.appendChild(downloadLink);
+
+    $('#video-preview').appendChild(p);
+
+  } else {
+    window.URL.revokeObjectURL(video.src);
+  }
+
+  // https://github.com/antimatter15/whammy
+  // var encoder = new Whammy.Video(1000/60);
+  // frames.forEach(function(dataURL, i) {
+  //   encoder.add(dataURL);
+  // });
+  // var webmBlob = encoder.compile();
+
+  if (!url) {
+    var webmBlob = Whammy.fromImageArray(frames, 1000 / 60);
+    url = window.URL.createObjectURL(webmBlob);
+  }
+
+  video.src = url;
+  downloadLink.href = url;
+};
+
   </script>
 </dom-module>
