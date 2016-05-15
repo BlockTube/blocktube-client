@@ -13,6 +13,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="stube-upload">
   <template>
+    <!-- This is temporary  -->
+    <iron-localstorage name="blocktube-clips"
+    value="{{clips}}"
+    on-iron-localstorage-load-empty="initclips"
+  ></iron-localstorage>
+
     <style>
       :host {
         display: block;
@@ -59,6 +65,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
+      // this will be removed later. Temp fix to get a list of uploads
+      initclips: function(){
+          this.clips = [];
+      },
+
       _uploadstart: function() {
         console.log('upload start');
         this.ipfs_uploading = true;
@@ -97,8 +108,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             // Yeah man - create that contract here now please....
 
             if (!err && res[0] && res[0].Hash) {
-              self._createNewUploadContract(res[0].Hash,function(){
+              self._createNewUploadContract(res[0].Hash,function(err,contractaddress){
                 console.log('mined!');
+                self.push('clips',contractaddress);
               });
             } else {
               console.log('error uploading metadata to IPFS', err);
@@ -159,7 +171,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   self.fire('add-toast', {
                     msg: 'Contract deployed: ' + self.contractaddress
                   });
-                  fn(self.contractaddress);
+                  fn(err,self.contractaddress);
                 }
               } else {
                 console.log('error:', err);
@@ -167,6 +179,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 self.fire('add-toast', {
                   msg: 'Error.'
                 });
+                fn(err);
               }
             });
           });
