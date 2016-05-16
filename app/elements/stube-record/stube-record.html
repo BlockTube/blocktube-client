@@ -178,6 +178,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       stoprecord: function() {
+        var self = this;
         window.cancelAnimationFrame(this.rafId);
         this.endTime = Date.now();
         //$('#stop-me').disabled = true;
@@ -191,18 +192,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // if (!url) {
         var webmBlob = Whammy.fromImageArray(this.frames, 1000 / 60);
 
-        this.$.ipfsupload.add(webmBlob, function(err, res) {
+        var reader = new FileReader();
+
+            reader.addEventListener("loadend", function() {
+              //self.data = reader.result;
+              self.$.ipfsupload.add(reader.result, function(err, res) {
 
           if (!err && res[0] && res[0].Hash) {
             console.log('hash=', res[0].Hash);
-            //              self._createNewUploadContract(res[0].Hash,function(err,contractaddress){
-            //                console.log('mined!');
-            //                self.push('clips',contractaddress);
-            //              });
+                         self._createNewUploadContract(res[0].Hash,function(err,contractaddress){
+                           console.log('mined!');
+                           self.push('clips',contractaddress);
+                         });
           } else {
             console.log('error uploading metadata to IPFS', err);
           }
         });
+            });
+
+            reader.readAsDataURL(webmBlob);
+
+        
 
 
 
