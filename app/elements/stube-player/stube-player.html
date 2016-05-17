@@ -45,13 +45,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       attached: function() {
-        console.log('hash=',this.videohash);
+//        console.log('stube hash=',this.videohash);
       },
 
       _hash: function(){
-        console.log('player got hash' , this.videohash);
+        console.log('stube-player got hash' , this.videohash);
         this.videourl = 'http://gateway.ipfs.io/ipfs/' + this.videohash;
-        console.log('video URL',this.videourl);
+        console.log('stube-playser setting URL for video player to ',this.videourl);
       }
     });
   })();

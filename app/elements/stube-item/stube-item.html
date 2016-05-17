@@ -45,18 +45,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       @apply(--layout-horizontal);
     }
     </style>
-   
+
     <div class="container vertical layout">
 
+      <div class="paper-font-body3">{{title}}</div>
 
-    <stube-player videohash="{{videohash}}"></stube-player>
-
-
+      <stube-player videohash="{{videohash}}"></stube-player>
 
       <div id="entry">
-        <div class="paper-font-body3">{{title}}</div>
         <div class="paper-font-body1 gris">
-          <span>{{duration}}</span>
+          <span>{{duration}} s</span>
           -
           <span>{{views}}</span>
           views
@@ -71,14 +69,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <p class="paper-font-body2 gris">{{likes}}</p>
         </div>
       </div>
-      <div class="paper-font-body2 gris"><span>{{username}}</span> - <span>{{views}}</span> views</div>
+      <div class="paper-font-body2 gris">
+        <span>{{username}}</span>
+        -
+        <span>{{views}}</span>
+        views
+      </div>
 
       <div class="paper-font-body1">{{ipfsobject}}</div>
       <div class="paper-font-body1">{{descr}}</div>
       <div></div>
-      </div>
     </div>
-
   </template>
 
   <script>
@@ -113,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           views: {
             type: Number,
-            value: 3120
+            value: 1000
           },
           comments: {
             type: Number,
@@ -125,7 +126,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           duration: {
             type: Number,
-            value: 1200
+            value: 0
           },
           hash: {
             type: String,

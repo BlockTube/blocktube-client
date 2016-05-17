@@ -177,28 +177,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.rafId = window.requestAnimationFrame(drawVideoFrame_);
       },
 
-      stoprecord: function() {
-        var self = this;
-        window.cancelAnimationFrame(this.rafId);
-        this.endTime = Date.now();
-        //$('#stop-me').disabled = true;
-        //document.title = ORIGINAL_DOC_TITLE;
+    stoprecord: function() {
+      var self = this;
+      window.cancelAnimationFrame(this.rafId);
+      this.endTime = Date.now();
+      //$('#stop-me').disabled = true;
+      //document.title = ORIGINAL_DOC_TITLE;
 
-        //toggleActivateRecordButton();
+      //toggleActivateRecordButton();
 
-        console.log('frames captured: ' + this.frames.length + ' => ' +
-          ((this.endTime - this.startTime) / 1000) + 's video');
+      this.duration = ((this.endTime - this.startTime) / 1000);
 
-        // if (!url) {
-        var webmBlob = Whammy.fromImageArray(this.frames, 1000 / 60);
+      console.log('frames captured: ' + this.frames.length + ' => ' +
+        ((this.endTime - this.startTime) / 1000) + 's video');
 
-        var reader = new FileReader();
 
-            reader.addEventListener("loadend", function() {
-              //self.data = reader.result;
-              self.$.ipfsupload.add(reader.result, function(err, res) {
+      // if (!url) {
+      var webmBlob = Whammy.fromImageArray(this.frames, 1000 / 60);
+
+      var reader = new FileReader();
+
+      reader.addEventListener("loadend", function() {
+        // upload the clipraw data
+        self.$.ipfsupload.add(reader.result, function(err, res) {
 
           if (!err && res[0] && res[0].Hash) {
+<<<<<<< HEAD
             this.metadata.uploaddate = Math.floor(new Date().getTime() / 1000);
             this.metadata.video = data.detail.hash;
             this.metadata.filename = data.detail.file.name;
@@ -211,29 +215,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             //                console.log('mined!');
             //                self.push('clips',contractaddress);
             //              });
+=======
+
+            self.metadata = {};
+
+            self.metadata.name = self.title || "Recorded at " + new Date();
+            self.metadata.description = self.description || "Recorded from Blocktu.be";
+
+            self.metadata.uploaddate = Math.floor(new Date().getTime() / 1000);
+            self.metadata.video = res[0].Hash;
+            self.metadata.duration = self.duration;
+            self.metadata.filename = 'recording-' + self.metadata.uploaddate + '.webm';
+            self.metadata.filesize = webmBlob.size;
+            self.metadata.filemimetype = webmBlob.type;
+
+            // now upload the metadata
+            self.$.ipfsupload.add(JSON.stringify(self.metadata), function(err, res) {
+
+              console.log('hash=', res[0].Hash);
+              self._createNewUploadContract(res[0].Hash, function(err, contractaddress) {
+                console.log('mined!');
+                self.push('clips', contractaddress);
+              });
+            });
+
+>>>>>>> origin/master
           } else {
             console.log('error uploading metadata to IPFS', err);
           }
         });
-            });
-
-            reader.readAsDataURL(webmBlob);
-
-        
+      });
 
 
+      reader.readAsArrayBuffer(webmBlob);
+      //reader.readAsDataURL(webmBlob);
 
-        //    this.url = window.URL.createObjectURL(webmBlob);
+      //    this.url = window.URL.createObjectURL(webmBlob);
 
-        //console.log('download video:',this.url);
+      //console.log('download video:',this.url);
 
-        //  }
+      //  }
 
-        //  video.src = url;
-        //  downloadLink.href = url;
+      //  video.src = url;
+      //  downloadLink.href = url;
 
-      },
-
+    },
       // this will be removed later. Temp fix to get a list of uploads
       initclips: function(){
           this.clips = [];
