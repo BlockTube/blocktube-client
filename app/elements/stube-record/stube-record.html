@@ -199,11 +199,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               self.$.ipfsupload.add(reader.result, function(err, res) {
 
           if (!err && res[0] && res[0].Hash) {
-            console.log('hash=', res[0].Hash);
-                         self._createNewUploadContract(res[0].Hash,function(err,contractaddress){
-                           console.log('mined!');
-                           self.push('clips',contractaddress);
-                         });
+            this.metadata.uploaddate = Math.floor(new Date().getTime() / 1000);
+            this.metadata.video = data.detail.hash;
+            this.metadata.filename = data.detail.file.name;
+            this.metadata.filesize = data.detail.file.size;
+            this.metadata.filemimetype = data.detail.file.type;
+
+            this.ipfs_uploading = false;
+            // console.log('hash=', res[0].Hash);
+            //              self._createNewUploadContract(res[0].Hash,function(err,contractaddress){
+            //                console.log('mined!');
+            //                self.push('clips',contractaddress);
+            //              });
           } else {
             console.log('error uploading metadata to IPFS', err);
           }
