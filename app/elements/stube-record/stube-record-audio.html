@@ -15,15 +15,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="stube-record-audio">
   <template>
 
-    <!-- <script src="./../bower_components/whammy/whammy.js"></script>
-  -->
-  <!--   <link href="../../bower_components/video.js/dist/video-js.css" rel="stylesheet">
-  <link href="../../bower_components/videojs-record/src/css/videojs.record.css" rel="stylesheet">
-
-  <script src="./../bower_components/video.js/dist/video.min.js"></script>
-
-  <script src="../../bower_components/videojs-record/src/js/videojs.record.js"></script>
-  -->
   <!-- This is temporary  -->
   <iron-localstorage name="blocktube-clips"
     value="{{clips}}"
@@ -49,12 +40,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <a id="downloadLink" download="mediarecorder.webm" name="mediarecorder.webm" href></a>
   <p id="data"></p>
 
-  <!-- 
-    <video id="myVideo" autoplay="true"></video>
-<paper-icon-button icon="add" on-tap="initrecorder" hidden="{{recorderinit}}"></paper-icon-button>
-<paper-icon-button icon="av:fiber-manual-record" on-tap="record" hidden="{{!recorderinit}}"></paper-icon-button>
-<paper-icon-button icon="av:stop" on-tap="stoprecord" hidden="{{!recorderinit}}"></paper-icon-button>
--->
 <ipfs-upload hidefileinput id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
 <template is="dom-if" if="{{ipfs_uploading}}">
   <span>Uploading</span>
@@ -67,8 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <paper-input label="Description" bind-value="{{description}}"></paper-input>
 <paper-button raised on-tap="upload">upload</paper-button>
 </template>
-<!-- <script src="../../scripts/whammy.min.js"></script>
--->
+
 <script>
   (function() {
     'use strict';
@@ -140,14 +124,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
           }; //Firefox
         }
-
-        // var recBtn = this.$.document.querySelector('button#rec');
-        // var pauseResBtn = document.querySelector('button#pauseRes');
-        // var stopBtn = document.querySelector('button#stop');
-
-        //var videoElement = document.querySelector('video');
-        //var dataElement = document.querySelector('#data');
-        //var downloadLink = document.querySelector('a#downloadLink');
 
         this.$.controls = false;
 
@@ -442,157 +418,157 @@ var reader = new FileReader();
 
       },
 
-      initrecorder: function() {
-        var self = this;
-        if (!window.URL) {
-          window.URL = window.URL || window.webkitURL || window.msURL || window.oURL;
-        }
-        if (!navigator.getUserMedia) {
-          navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-        }
+      // initrecorder: function() {
+      //   var self = this;
+      //   if (!window.URL) {
+      //     window.URL = window.URL || window.webkitURL || window.msURL || window.oURL;
+      //   }
+      //   if (!navigator.getUserMedia) {
+      //     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+      //   }
 
-        this.requestAnimationFrame = window.requestAnimationFrame ||
-          window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame ||
-          window.msRequestAnimationFrame || window.oRequestAnimationFrame;
+      //   this.requestAnimationFrame = window.requestAnimationFrame ||
+      //     window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame ||
+      //     window.msRequestAnimationFrame || window.oRequestAnimationFrame;
 
-        this.cancelAnimationFrame = window.cancelAnimationFrame ||
-          window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame ||
-          window.msCancelAnimationFrame || window.oCancelAnimationFrame;
-
-
-        var self = this;
-        navigator.getUserMedia({
-            //audio: self.audio,
-            video: true
-          },
-          function(stream) {
-            self.$.myVideo.src = window.URL.createObjectURL(stream);
-            setTimeout(function() {
-              self.$.myVideo.width = 320; //video.clientWidth;
-              self.$.myVideo.height = 240; // video.clientHeight;
-              // Canvas is 1/2 for performance. Otherwise, getImageData() readback is
-              // awful 100ms+ as 640x480.
-              self.canvas.width = self.$.myVideo.width;
-              self.canvas.height = self.$.myVideo.height;
-            }, 1000);
-
-            self.recorderinit = true;
-          },
-          function(err) {
-            throw Error(err);
-          });
-        this.canvas = document.createElement('canvas');
-      },
-
-      record: function() {
-        var self = this;
-
-        //this.elapsedTime = $('#elasped-time');
-        var ctx = this.canvas.getContext('2d');
-        var CANVAS_HEIGHT = this.canvas.height;
-        var CANVAS_WIDTH = this.canvas.width;
-
-        this.frames = []; // clear existing frames;
-        this.startTime = Date.now();
-
-        //        toggleActivateRecordButton();
-        //        $('#stop-me').disabled = false;
-
-        function drawVideoFrame_(time) {
-          self.rafId = window.requestAnimationFrame(drawVideoFrame_);
-
-          ctx.drawImage(self.$.myVideo, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-          document.title = 'Recording...' + Math.round((Date.now() - self.startTime) / 1000) + 's';
-
-          // Read back canvas as webp.
-          //console.time('canvas.dataURL() took');
-          var url = self.canvas.toDataURL('image/webp', 1); // image/jpeg is way faster :(
-          //console.timeEnd('canvas.dataURL() took');
-          self.frames.push(url);
-
-          // UInt8ClampedArray (for Worker).
-          //frames.push(ctx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data);
-
-          // ImageData
-          //frames.push(ctx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT));
-        };
-
-        this.rafId = window.requestAnimationFrame(drawVideoFrame_);
-      },
-
-      stoprecord: function() {
-        var self = this;
-        window.cancelAnimationFrame(this.rafId);
-        this.endTime = Date.now();
-        //$('#stop-me').disabled = true;
-        //document.title = ORIGINAL_DOC_TITLE;
-
-        //toggleActivateRecordButton();
-
-        this.duration = ((this.endTime - this.startTime) / 1000);
-
-        console.log('frames captured: ' + this.frames.length + ' => ' +
-          ((this.endTime - this.startTime) / 1000) + 's video');
+      //   this.cancelAnimationFrame = window.cancelAnimationFrame ||
+      //     window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame ||
+      //     window.msCancelAnimationFrame || window.oCancelAnimationFrame;
 
 
-        // if (!url) {
-        var webmBlob = Whammy.fromImageArray(this.frames, 1000 / 60);
+      //   var self = this;
+      //   navigator.getUserMedia({
+      //       //audio: self.audio,
+      //       video: true
+      //     },
+      //     function(stream) {
+      //       self.$.myVideo.src = window.URL.createObjectURL(stream);
+      //       setTimeout(function() {
+      //         self.$.myVideo.width = 320; //video.clientWidth;
+      //         self.$.myVideo.height = 240; // video.clientHeight;
+      //         // Canvas is 1/2 for performance. Otherwise, getImageData() readback is
+      //         // awful 100ms+ as 640x480.
+      //         self.canvas.width = self.$.myVideo.width;
+      //         self.canvas.height = self.$.myVideo.height;
+      //       }, 1000);
 
-        var reader = new FileReader();
+      //       self.recorderinit = true;
+      //     },
+      //     function(err) {
+      //       throw Error(err);
+      //     });
+      //   this.canvas = document.createElement('canvas');
+      // },
 
-        reader.addEventListener("loadend", function() {
-          // upload the clipraw data
-          self.$.ipfsupload.add(reader.result, function(err, res) {
+      // record: function() {
+      //   var self = this;
 
-            if (!err && res[0] && res[0].Hash) {
+      //   //this.elapsedTime = $('#elasped-time');
+      //   var ctx = this.canvas.getContext('2d');
+      //   var CANVAS_HEIGHT = this.canvas.height;
+      //   var CANVAS_WIDTH = this.canvas.width;
 
-              self.metadata = {};
+      //   this.frames = []; // clear existing frames;
+      //   this.startTime = Date.now();
 
-              self.metadata.name = self.title || "Recorded at " + new Date();
-              self.metadata.description = self.description || "Recorded from Blocktu.be";
+      //   //        toggleActivateRecordButton();
+      //   //        $('#stop-me').disabled = false;
 
-              self.metadata.uploaddate = Math.floor(new Date().getTime() / 1000);
-              self.metadata.video = res[0].Hash;
-              self.metadata.duration = self.duration;
-              self.metadata.filename = 'recording-' + self.metadata.uploaddate + '.webm';
-              self.metadata.filesize = webmBlob.size;
-              self.metadata.filemimetype = webmBlob.type;
+      //   function drawVideoFrame_(time) {
+      //     self.rafId = window.requestAnimationFrame(drawVideoFrame_);
 
-              // now upload the metadata
-              self.$.ipfsupload.add(JSON.stringify(self.metadata), function(err, res) {
+      //     ctx.drawImage(self.$.myVideo, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-                console.log('hash=', res[0].Hash);
-                self._createNewUploadContract(res[0].Hash, function(err, contractaddress) {
-                  console.log('mined!');
-                  self.push('clips', contractaddress);
-                });
-              });
+      //     document.title = 'Recording...' + Math.round((Date.now() - self.startTime) / 1000) + 's';
 
-            } else {
-              console.log('error uploading metadata to IPFS', err);
-            }
-          });
-        });
+      //     // Read back canvas as webp.
+      //     //console.time('canvas.dataURL() took');
+      //     var url = self.canvas.toDataURL('image/webp', 1); // image/jpeg is way faster :(
+      //     //console.timeEnd('canvas.dataURL() took');
+      //     self.frames.push(url);
+
+      //     // UInt8ClampedArray (for Worker).
+      //     //frames.push(ctx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data);
+
+      //     // ImageData
+      //     //frames.push(ctx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT));
+      //   };
+
+      //   this.rafId = window.requestAnimationFrame(drawVideoFrame_);
+      // },
+
+      // stoprecord: function() {
+      //   var self = this;
+      //   window.cancelAnimationFrame(this.rafId);
+      //   this.endTime = Date.now();
+      //   //$('#stop-me').disabled = true;
+      //   //document.title = ORIGINAL_DOC_TITLE;
+
+      //   //toggleActivateRecordButton();
+
+      //   this.duration = ((this.endTime - this.startTime) / 1000);
+
+      //   console.log('frames captured: ' + this.frames.length + ' => ' +
+      //     ((this.endTime - this.startTime) / 1000) + 's video');
 
 
-        reader.readAsArrayBuffer(webmBlob);
-        //reader.readAsDataURL(webmBlob);
+      //   // if (!url) {
+      //   var webmBlob = Whammy.fromImageArray(this.frames, 1000 / 60);
 
-        //    this.url = window.URL.createObjectURL(webmBlob);
+      //   var reader = new FileReader();
 
-        //console.log('download video:',this.url);
+      //   reader.addEventListener("loadend", function() {
+      //     // upload the clipraw data
+      //     self.$.ipfsupload.add(reader.result, function(err, res) {
 
-        //  }
+      //       if (!err && res[0] && res[0].Hash) {
 
-        //  video.src = url;
-        //  downloadLink.href = url;
+      //         self.metadata = {};
 
-      },
-      // this will be removed later. Temp fix to get a list of uploads
-      initclips: function() {
-        this.clips = [];
-      },
+      //         self.metadata.name = self.title || "Recorded at " + new Date();
+      //         self.metadata.description = self.description || "Recorded from Blocktu.be";
+
+      //         self.metadata.uploaddate = Math.floor(new Date().getTime() / 1000);
+      //         self.metadata.video = res[0].Hash;
+      //         self.metadata.duration = self.duration;
+      //         self.metadata.filename = 'recording-' + self.metadata.uploaddate + '.webm';
+      //         self.metadata.filesize = webmBlob.size;
+      //         self.metadata.filemimetype = webmBlob.type;
+
+      //         // now upload the metadata
+      //         self.$.ipfsupload.add(JSON.stringify(self.metadata), function(err, res) {
+
+      //           console.log('hash=', res[0].Hash);
+      //           self._createNewUploadContract(res[0].Hash, function(err, contractaddress) {
+      //             console.log('mined!');
+      //             self.push('clips', contractaddress);
+      //           });
+      //         });
+
+      //       } else {
+      //         console.log('error uploading metadata to IPFS', err);
+      //       }
+      //     });
+      //   });
+
+
+      //   reader.readAsArrayBuffer(webmBlob);
+      //   //reader.readAsDataURL(webmBlob);
+
+      //   //    this.url = window.URL.createObjectURL(webmBlob);
+
+      //   //console.log('download video:',this.url);
+
+      //   //  }
+
+      //   //  video.src = url;
+      //   //  downloadLink.href = url;
+
+      // },
+      // // this will be removed later. Temp fix to get a list of uploads
+      // initclips: function() {
+      //   this.clips = [];
+      // },
 
       _uploadstart: function() {
         console.log('upload start');
@@ -717,67 +693,6 @@ var reader = new FileReader();
     });
   })();
 
-
-
-  function stop() {
-    cancelAnimationFrame(rafId);
-    endTime = Date.now();
-    $('#stop-me').disabled = true;
-    document.title = ORIGINAL_DOC_TITLE;
-
-    toggleActivateRecordButton();
-
-    console.log('frames captured: ' + frames.length + ' => ' +
-      ((endTime - startTime) / 1000) + 's video');
-
-    embedVideoPreview();
-  };
-
-  function embedVideoPreview(opt_url) {
-    var url = opt_url || null;
-    var video = $('#video-preview video') || null;
-    var downloadLink = $('#video-preview a[download]') || null;
-
-    if (!video) {
-      video = document.createElement('video');
-      video.autoplay = true;
-      video.controls = true;
-      video.loop = true;
-      //video.style.position = 'absolute';
-      //video.style.top = '70px';
-      //video.style.left = '10px';
-      video.style.width = canvas.width + 'px';
-      video.style.height = canvas.height + 'px';
-      $('#video-preview').appendChild(video);
-
-      downloadLink = document.createElement('a');
-      downloadLink.download = 'capture.webm';
-      downloadLink.textContent = '[ download video ]';
-      downloadLink.title = 'Download your .webm video';
-      var p = document.createElement('p');
-      p.appendChild(downloadLink);
-
-      $('#video-preview').appendChild(p);
-
-    } else {
-      window.URL.revokeObjectURL(video.src);
-    }
-
-    // https://github.com/antimatter15/whammy
-    // var encoder = new Whammy.Video(1000/60);
-    // frames.forEach(function(dataURL, i) {
-    //   encoder.add(dataURL);
-    // });
-    // var webmBlob = encoder.compile();
-
-    if (!url) {
-      var webmBlob = Whammy.fromImageArray(frames, 1000 / 60);
-      url = window.URL.createObjectURL(webmBlob);
-    }
-
-    video.src = url;
-    downloadLink.href = url;
-  };
 
   </script>
 </dom-module>
