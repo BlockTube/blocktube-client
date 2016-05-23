@@ -77,9 +77,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         self.transactionlog('Casting like');
         self.pageselected = 2;
 
-        var result = myContractInstance.like.sendTransaction(self.clipaddr, 1, options,
+        myContractInstance.like.sendTransaction(self.clipaddr, 1, options,
           function(err, txhash) {
-            if (err != null) {
+            if (err !== null) {
               console.log(err);
               self.transactionlog('ERROR: Transaction didnt go through. See console.');
             } else {

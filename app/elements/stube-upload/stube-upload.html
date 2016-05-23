@@ -25,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
-    <template is="dom-if" if="{{ipfs_uploading}}">
+    <template is="dom-if" if="{{ipfsuploading}}">
       <span>Uploading</span>
     </template>
     <template is="dom-if" if="{{cliphash}}">
@@ -55,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: false
         },
-        ipfs_uploading: {
+        ipfsuploading: {
           type: Boolean,
           value: false
         },
@@ -72,12 +72,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _uploadstart: function() {
         console.log('upload start');
-        this.ipfs_uploading = true;
+        this.ipfsuploading = true;
       },
 
       _uploaderror: function() {
         console.log('error uploading');
-        this.ipfs_uploading = false;
+        this.ipfsuploading = false;
       },
 
       _setipfshash: function(data) {
@@ -88,7 +88,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.metadata.filesize = data.detail.file.size;
         this.metadata.filemimetype = data.detail.file.type;
 
-        this.ipfs_uploading = false;
+        this.ipfsuploading = false;
         this.createclip();
       },
 
@@ -97,7 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.createclip();
       },
       createclip: function() {
-        var self = this
+        var self = this;
         if (this.readyforupload && this.cliphash) {
           // All is ready
           this.metadata.name = this.title;

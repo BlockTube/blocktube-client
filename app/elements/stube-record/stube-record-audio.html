@@ -8,17 +8,17 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/ipfs-upload/ipfs-upload.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel='import' href='../../bower_components/polymer/polymer.html'>
+<link rel='import' href='../../bower_components/ipfs-upload/ipfs-upload.html'>
+<link rel='import' href='../../bower_components/paper-icon-button/paper-icon-button.html'>
 
-<dom-module id="stube-record-audio">
+<dom-module id='stube-record-audio'>
   <template>
 
   <!-- This is temporary  -->
-  <iron-localstorage name="blocktube-clips"
-    value="{{clips}}"
-    on-iron-localstorage-load-empty="initclips"
+  <iron-localstorage name='blocktube-clips'
+    value='{{clips}}'
+    on-iron-localstorage-load-empty='initclips'
   ></iron-localstorage>
 
   <style>
@@ -27,30 +27,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-  <div id="container">
+  <div id='container'>
 
-    <video id="videoElement" controls autoplay></video>
+    <video id='videoElement' controls autoplay></video>
     <br>
 
-    <paper-icon-button id="record" icon="av:fiber-manual-record" id="rec" on-tap="onBtnRecordClicked">Record</paper-icon-button>
-    <paper-icon-button id="pause"  icon="av:pause"   on-tap="onPauseResumeClicked" disabled>Pause</paper-icon-button>
-    <paper-icon-button id="stop" icon="av:stop"  on-tap="onBtnStopClicked" disabled>Stop</paper-icon-button>
+    <paper-icon-button id='record' icon='av:fiber-manual-record' id='rec' on-tap='onBtnRecordClicked'>Record</paper-icon-button>
+    <paper-icon-button id='pause'  icon='av:pause'   on-tap='onPauseResumeClicked' disabled>Pause</paper-icon-button>
+    <paper-icon-button id='stop' icon='av:stop'  on-tap='onBtnStopClicked' disabled>Stop</paper-icon-button>
   </div>
 
-  <a id="downloadLink" download="mediarecorder.webm" name="mediarecorder.webm" href></a>
-  <p id="data"></p>
+  <a id='downloadLink' download='mediarecorder.webm' name='mediarecorder.webm' href></a>
+  <p id='data'></p>
 
-<ipfs-upload hidefileinput id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
-<template is="dom-if" if="{{ipfs_uploading}}">
+<ipfs-upload hidefileinput id='ipfsupload' hash='{{cliphash}}' on-ipfs-hash-received='_setipfshash' on-upload-started='_uploadstart' on-upload-error='_uploaderror' host='/ip4/109.123.70.141/tcp/5001'></ipfs-upload>
+<template is='dom-if' if='{{ipfsuploading}}'>
   <span>Uploading</span>
 </template>
-<template is="dom-if" if="{{cliphash}}">
+<template is='dom-if' if='{{cliphash}}'>
   <span>Upload complete</span>
 </template>
 
-<paper-input label="Title" bind-value="{{title}}"></paper-input>
-<paper-input label="Description" bind-value="{{description}}"></paper-input>
-<paper-button raised on-tap="upload">upload</paper-button>
+<paper-input label='Title' bind-value='{{title}}'></paper-input>
+<paper-input label='Description' bind-value='{{description}}'></paper-input>
+<paper-button raised on-tap='upload'>upload</paper-button>
 </template>
 
 <script>
@@ -73,7 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: false
         },
-        ipfs_uploading: {
+        ipfsuploading: {
           type: Boolean,
           value: false
         },
@@ -94,20 +94,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
 
-        if (this.getBrowser() == "Chrome") {
+        if (this.getBrowser() === 'Chrome') {
           this.constraints = {
-            "audio": true,
-            "video": {
-              "mandatory": {
-                "minWidth": 320,
-                "maxWidth": 320,
-                "minHeight": 240,
-                "maxHeight": 240
+            'audio': true,
+            'video': {
+              'mandatory': {
+                'minWidth': 320,
+                'maxWidth': 320,
+                'minHeight': 240,
+                'maxHeight': 240
               },
-              "optional": []
+              'optional': []
             }
           }; //Chrome
-        } else if (this.getBrowser() == "Firefox") {
+        } else if (this.getBrowser() === 'Firefox') {
           this.constraints = {
             audio: true,
             video: {
@@ -139,7 +139,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         //function handleSourceOpen(event) {
         //  console.log('MediaSource opened');
-        //  sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp9"');
+        //  sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs='vp9'');
         //  console.log('Source buffer: ', sourceBuffer);
         //}
 
@@ -158,16 +158,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       startRecording: function(self,stream) {
         console.log('Start recording...');
-        if (typeof MediaRecorder.isTypeSupported == 'function') {
+        var options;
+        if (typeof MediaRecorder.isTypeSupported === 'function') {
           /*
             MediaRecorder.isTypeSupported is a Chrome 49 function announced in https://developers.google.com/web/updates/2016/01/mediarecorder but it's not present in the MediaRecorder API spec http://www.w3.org/TR/mediastream-recording/
           */
           if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
-            var options = {
+            options = {
               mimeType: 'video/webm;codecs=vp9'
             };
           } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
-            var options = {
+            options = {
               mimeType: 'video/webm;codecs=vp8'
             };
           }
@@ -180,7 +181,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
-        //  this.pauseResBtn.textContent = "Pause";
+        //  this.pauseResBtn.textContent = 'Pause';
 
         this.mediaRecorder.start(10);
 
@@ -188,7 +189,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.videoElement.src = url ? url.createObjectURL(stream) : stream;
         this.$.videoElement.play();
 
-        var self = this;
+        //var self = this;
 
         this.mediaRecorder.ondataavailable = function(e) {
           //log('Data available...');
@@ -215,7 +216,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log('Stopped  & state = ' + self.mediaRecorder.state);
 
           var blob = new Blob(self.chunks, {
-            type: "video/webm"
+            type: 'video/webm'
           });
           self.chunks = [];
 
@@ -226,17 +227,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           self.$.downloadLink.innerHTML = 'Download video file';
 
           var rand = Math.floor((Math.random() * 10000000));
-          var name = "video_" + rand + ".webm";
+          var name = 'video_' + rand + '.webm';
 
-          self.$.downloadLink.setAttribute("download", name);
-          self.$.downloadLink.setAttribute("name", name);
+          self.$.downloadLink.setAttribute('download', name);
+          self.$.downloadLink.setAttribute('name', name);
 
 
 
 
 var reader = new FileReader();
 
-      reader.addEventListener("loadend", function() {
+      reader.addEventListener('loadend', function() {
         // upload the clipraw data
         self.$.ipfsupload.add(reader.result, function(err, res) {
 
@@ -245,8 +246,8 @@ var reader = new FileReader();
 
             self.metadata = {};
 
-            self.metadata.name = self.title || "Recorded at " + new Date();
-            self.metadata.description = self.description || "Recorded from Blocktu.be";
+            self.metadata.name = self.title || 'Recorded at ' + new Date();
+            self.metadata.description = self.description || 'Recorded from Blocktu.be';
 
             self.metadata.uploaddate = Math.floor(new Date().getTime() / 1000);
             self.metadata.video = res[0].Hash;
@@ -275,38 +276,30 @@ var reader = new FileReader();
 
       reader.readAsArrayBuffer(blob);
 
-
-
-
-
-
-
-
-
         };
 
-        mediaRecorder.onpause = function() {
-          console.log('Paused & state = ' + self.mediaRecorder.state);
-        }
+        // mediaRecorder.onpause = function() {
+        //   console.log('Paused & state = ' + self.mediaRecorder.state);
+        // };
 
-        mediaRecorder.onresume = function() {
-          console.log('Resumed  & state = ' + self.mediaRecorder.state);
-        }
+        // mediaRecorder.onresume = function() {
+        //   console.log('Resumed  & state = ' + self.mediaRecorder.state);
+        // };
 
-        mediaRecorder.onwarning = function(e) {
-          console.log('Warning: ' + e);
-        };
+        // mediaRecorder.onwarning = function(e) {
+        //   console.log('Warning: ' + e);
+        // };
       },
 
 
       onBtnRecordClicked: function() {
         var self = this;
         if (typeof MediaRecorder === 'undefined' || !navigator.getUserMedia) {
-          alert('MediaRecorder not supported on your browser, use Firefox 30 or Chrome 49 instead.');
+          //alert('MediaRecorder not supported on your browser, use Firefox 30 or Chrome 49 instead.');
         } else {
           navigator.getUserMedia(this.constraints, function(stream){ 
-            self.startRecording(self,stream) }
-            , this.errorCallback);
+            self.startRecording(self,stream);
+             }, this.errorCallback);
           this.$.record.disabled = true;
           this.$.pause.disabled = false;
           this.$.stop.disabled = false;
@@ -327,19 +320,19 @@ var reader = new FileReader();
 
       onPauseResumeClicked: function() {
 
-        if (this.$.pause.textContent === "Pause") {
+        if (this.$.pause.textContent === 'Pause') {
 
-          console.log("pause");
+          console.log('pause');
 
-          this.$.pause.textContent = "Resume";
+          this.$.pause.textContent = 'Resume';
           this.mediaRecorder.pause();
 
           this.$.stop.disabled = true;
 
         } else {
-          console.log("resume");
+          console.log('resume');
 
-          this.$.pause.textContent = "Pause";
+          this.$.pause.textContent = 'Pause';
           this.mediaRecorder.resume();
 
           this.$.stop.disabled = false;
@@ -352,56 +345,60 @@ var reader = new FileReader();
 
       getBrowser: function getBrowser() {
 
-        var nVer = navigator.appVersion;
+        //var nVer = navigator.appVersion;
         var nAgt = navigator.userAgent;
         var browserName = navigator.appName;
         var fullVersion = '' + parseFloat(navigator.appVersion);
         var majorVersion = parseInt(navigator.appVersion, 10);
         var nameOffset, verOffset, ix;
 
-        // In Opera, the true version is after "Opera" or after "Version"
-        if ((verOffset = nAgt.indexOf("Opera")) != -1) {
-          browserName = "Opera";
+        // In Opera, the true version is after 'Opera' or after 'Version'
+        if ((verOffset = nAgt.indexOf('Opera')) !== -1) {
+          browserName = 'Opera';
           fullVersion = nAgt.substring(verOffset + 6);
-          if ((verOffset = nAgt.indexOf("Version")) != -1)
+          if ((verOffset = nAgt.indexOf('Version')) !== -1){
             fullVersion = nAgt.substring(verOffset + 8);
+          }
         }
-        // In MSIE, the true version is after "MSIE" in userAgent
-        else if ((verOffset = nAgt.indexOf("MSIE")) != -1) {
-          browserName = "Microsoft Internet Explorer";
+        // In MSIE, the true version is after 'MSIE' in userAgent
+        else if ((verOffset = nAgt.indexOf('MSIE')) !== -1) {
+          browserName = 'Microsoft Internet Explorer';
           fullVersion = nAgt.substring(verOffset + 5);
         }
-        // In Chrome, the true version is after "Chrome"
-        else if ((verOffset = nAgt.indexOf("Chrome")) != -1) {
-          browserName = "Chrome";
+        // In Chrome, the true version is after 'Chrome'
+        else if ((verOffset = nAgt.indexOf('Chrome')) !== -1) {
+          browserName = 'Chrome';
           fullVersion = nAgt.substring(verOffset + 7);
         }
-        // In Safari, the true version is after "Safari" or after "Version"
-        else if ((verOffset = nAgt.indexOf("Safari")) != -1) {
-          browserName = "Safari";
+        // In Safari, the true version is after 'Safari' or after 'Version'
+        else if ((verOffset = nAgt.indexOf('Safari')) !== -1) {
+          browserName = 'Safari';
           fullVersion = nAgt.substring(verOffset + 7);
-          if ((verOffset = nAgt.indexOf("Version")) != -1)
+          if ((verOffset = nAgt.indexOf('Version')) !== -1){
             fullVersion = nAgt.substring(verOffset + 8);
+          }
         }
-        // In Firefox, the true version is after "Firefox"
-        else if ((verOffset = nAgt.indexOf("Firefox")) != -1) {
-          browserName = "Firefox";
+        // In Firefox, the true version is after 'Firefox'
+        else if ((verOffset = nAgt.indexOf('Firefox')) !== -1) {
+          browserName = 'Firefox';
           fullVersion = nAgt.substring(verOffset + 8);
         }
-        // In most other browsers, "name/version" is at the end of userAgent
+        // In most other browsers, 'name/version' is at the end of userAgent
         else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) <
           (verOffset = nAgt.lastIndexOf('/'))) {
           browserName = nAgt.substring(nameOffset, verOffset);
           fullVersion = nAgt.substring(verOffset + 1);
-          if (browserName.toLowerCase() == browserName.toUpperCase()) {
+          if (browserName.toLowerCase() === browserName.toUpperCase()) {
             browserName = navigator.appName;
           }
         }
         // trim the fullVersion string at semicolon/space if present
-        if ((ix = fullVersion.indexOf(";")) != -1)
+        if ((ix = fullVersion.indexOf(';')) !== -1){
           fullVersion = fullVersion.substring(0, ix);
-        if ((ix = fullVersion.indexOf(" ")) != -1)
+        }
+        if ((ix = fullVersion.indexOf(' ')) !== -1){
           fullVersion = fullVersion.substring(0, ix);
+        }
 
         majorVersion = parseInt('' + fullVersion, 10);
         if (isNaN(majorVersion)) {
@@ -418,166 +415,15 @@ var reader = new FileReader();
 
       },
 
-      // initrecorder: function() {
-      //   var self = this;
-      //   if (!window.URL) {
-      //     window.URL = window.URL || window.webkitURL || window.msURL || window.oURL;
-      //   }
-      //   if (!navigator.getUserMedia) {
-      //     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-      //   }
-
-      //   this.requestAnimationFrame = window.requestAnimationFrame ||
-      //     window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame ||
-      //     window.msRequestAnimationFrame || window.oRequestAnimationFrame;
-
-      //   this.cancelAnimationFrame = window.cancelAnimationFrame ||
-      //     window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame ||
-      //     window.msCancelAnimationFrame || window.oCancelAnimationFrame;
-
-
-      //   var self = this;
-      //   navigator.getUserMedia({
-      //       //audio: self.audio,
-      //       video: true
-      //     },
-      //     function(stream) {
-      //       self.$.myVideo.src = window.URL.createObjectURL(stream);
-      //       setTimeout(function() {
-      //         self.$.myVideo.width = 320; //video.clientWidth;
-      //         self.$.myVideo.height = 240; // video.clientHeight;
-      //         // Canvas is 1/2 for performance. Otherwise, getImageData() readback is
-      //         // awful 100ms+ as 640x480.
-      //         self.canvas.width = self.$.myVideo.width;
-      //         self.canvas.height = self.$.myVideo.height;
-      //       }, 1000);
-
-      //       self.recorderinit = true;
-      //     },
-      //     function(err) {
-      //       throw Error(err);
-      //     });
-      //   this.canvas = document.createElement('canvas');
-      // },
-
-      // record: function() {
-      //   var self = this;
-
-      //   //this.elapsedTime = $('#elasped-time');
-      //   var ctx = this.canvas.getContext('2d');
-      //   var CANVAS_HEIGHT = this.canvas.height;
-      //   var CANVAS_WIDTH = this.canvas.width;
-
-      //   this.frames = []; // clear existing frames;
-      //   this.startTime = Date.now();
-
-      //   //        toggleActivateRecordButton();
-      //   //        $('#stop-me').disabled = false;
-
-      //   function drawVideoFrame_(time) {
-      //     self.rafId = window.requestAnimationFrame(drawVideoFrame_);
-
-      //     ctx.drawImage(self.$.myVideo, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-      //     document.title = 'Recording...' + Math.round((Date.now() - self.startTime) / 1000) + 's';
-
-      //     // Read back canvas as webp.
-      //     //console.time('canvas.dataURL() took');
-      //     var url = self.canvas.toDataURL('image/webp', 1); // image/jpeg is way faster :(
-      //     //console.timeEnd('canvas.dataURL() took');
-      //     self.frames.push(url);
-
-      //     // UInt8ClampedArray (for Worker).
-      //     //frames.push(ctx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data);
-
-      //     // ImageData
-      //     //frames.push(ctx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT));
-      //   };
-
-      //   this.rafId = window.requestAnimationFrame(drawVideoFrame_);
-      // },
-
-      // stoprecord: function() {
-      //   var self = this;
-      //   window.cancelAnimationFrame(this.rafId);
-      //   this.endTime = Date.now();
-      //   //$('#stop-me').disabled = true;
-      //   //document.title = ORIGINAL_DOC_TITLE;
-
-      //   //toggleActivateRecordButton();
-
-      //   this.duration = ((this.endTime - this.startTime) / 1000);
-
-      //   console.log('frames captured: ' + this.frames.length + ' => ' +
-      //     ((this.endTime - this.startTime) / 1000) + 's video');
-
-
-      //   // if (!url) {
-      //   var webmBlob = Whammy.fromImageArray(this.frames, 1000 / 60);
-
-      //   var reader = new FileReader();
-
-      //   reader.addEventListener("loadend", function() {
-      //     // upload the clipraw data
-      //     self.$.ipfsupload.add(reader.result, function(err, res) {
-
-      //       if (!err && res[0] && res[0].Hash) {
-
-      //         self.metadata = {};
-
-      //         self.metadata.name = self.title || "Recorded at " + new Date();
-      //         self.metadata.description = self.description || "Recorded from Blocktu.be";
-
-      //         self.metadata.uploaddate = Math.floor(new Date().getTime() / 1000);
-      //         self.metadata.video = res[0].Hash;
-      //         self.metadata.duration = self.duration;
-      //         self.metadata.filename = 'recording-' + self.metadata.uploaddate + '.webm';
-      //         self.metadata.filesize = webmBlob.size;
-      //         self.metadata.filemimetype = webmBlob.type;
-
-      //         // now upload the metadata
-      //         self.$.ipfsupload.add(JSON.stringify(self.metadata), function(err, res) {
-
-      //           console.log('hash=', res[0].Hash);
-      //           self._createNewUploadContract(res[0].Hash, function(err, contractaddress) {
-      //             console.log('mined!');
-      //             self.push('clips', contractaddress);
-      //           });
-      //         });
-
-      //       } else {
-      //         console.log('error uploading metadata to IPFS', err);
-      //       }
-      //     });
-      //   });
-
-
-      //   reader.readAsArrayBuffer(webmBlob);
-      //   //reader.readAsDataURL(webmBlob);
-
-      //   //    this.url = window.URL.createObjectURL(webmBlob);
-
-      //   //console.log('download video:',this.url);
-
-      //   //  }
-
-      //   //  video.src = url;
-      //   //  downloadLink.href = url;
-
-      // },
-      // // this will be removed later. Temp fix to get a list of uploads
-      // initclips: function() {
-      //   this.clips = [];
-      // },
 
       _uploadstart: function() {
         console.log('upload start');
-        this.ipfs_uploading = true;
+        this.ipfsuploading = true;
       },
 
       _uploaderror: function() {
         console.log('error uploading');
-        this.ipfs_uploading = false;
+        this.ipfsuploading = false;
       },
 
       _setipfshash: function(data) {
@@ -588,7 +434,7 @@ var reader = new FileReader();
         this.metadata.filesize = data.detail.file.size;
         this.metadata.filemimetype = data.detail.file.type;
 
-        this.ipfs_uploading = false;
+        this.ipfsuploading = false;
         this.createclip();
       },
 
@@ -597,7 +443,7 @@ var reader = new FileReader();
         this.createclip();
       },
       createclip: function() {
-        var self = this
+        var self = this;
         if (this.readyforupload && this.cliphash) {
           // All is ready
           this.metadata.name = this.title;
@@ -658,7 +504,7 @@ var reader = new FileReader();
                   console.log('Your upload contract has been deployed to the Ethereum network. Transaction hash is', myContract.transactionHash);
                   self.txhash = myContract.transactionHash;
                   console.log('Wait a new moments while we mine it. You will receive your address when it is mined.');
-                  //self.showtoast("Here's the TX hash: " + self.txhash);
+                  //self.showtoast('Here's the TX hash: ' + self.txhash);
                   self.fire('add-toast', {
                     msg: 'Here\'s the TX hash: ' + self.txhash
                   });
@@ -667,7 +513,7 @@ var reader = new FileReader();
                 } else {
                   console.log('Your upload contract has been deployed. Your contract address is', myContract.address);
                   self.contractaddress = myContract.address;
-                  //self.showtoast("Contract deployed: " + self.contractaddress);
+                  //self.showtoast('Contract deployed: ' + self.contractaddress);
                   self.fire('add-toast', {
                     msg: 'Contract deployed: ' + self.contractaddress
                   });
@@ -675,7 +521,7 @@ var reader = new FileReader();
                 }
               } else {
                 console.log('error:', err);
-                //self.showtoast("Error: " + err);
+                //self.showtoast('Error: ' + err);
                 self.fire('add-toast', {
                   msg: 'Error.'
                 });
