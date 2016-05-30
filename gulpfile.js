@@ -296,7 +296,7 @@ gulp.task('deploy', ['default'], function() {
     file: 'env.json',
   });
 
-  if (!process.env.BB_ACCESSTOKEN){
+  if (!process.env.BB_ACCESSTOKEN) {
     console.log('to deploy create a env.json file (see env.json.sample)');
     process.exit();
   }
@@ -322,26 +322,34 @@ gulp.task('solc', function() {
   ], {
     cwd: '.'
   }, function(error, files) {
+    var allfiles = '';
+    var destpath = '';
+
     files.forEach(function(file) {
       console.log('compiling sol file', file);
 
       var fileContent = fs.readFileSync(file, "utf8");
 
-      var solc = require('solc');
-      var input = fileContent;
-      var output = solc.compile(input, 1); // 1 activates the optimiser
-      for (var contractName in output.contracts) {
-        var data = {
-          bytecode: output.contracts[contractName].bytecode,
-          abi: JSON.parse(output.contracts[contractName].interface)
-        }
-        var outputFileName = require('path').dirname(file) + '/' + contractName + ".json";
-        console.log('saving to', outputFileName);
-
-        fs.writeFile(outputFileName, JSON.stringify(data), 'utf8');
-
-      }
+      allfiles += fileContent;
+      destpath = require('path').dirname(file);
     });
+
+    var solc = require('solc');
+    var input = allfiles;
+    var output = solc.compile(input, 1); // 1 activates the optimiser
+    console.log(output);
+    for (var contractName in output.contracts) {
+      var data = {
+        bytecode: output.contracts[contractName].bytecode,
+        abi: JSON.parse(output.contracts[contractName].interface)
+      }
+      var outputFileName = destpath + '/' + contractName + ".json";
+      console.log('saving to', outputFileName);
+
+      fs.writeFile(outputFileName, JSON.stringify(data), 'utf8');
+
+    }
+
   });
 });
 
@@ -349,7 +357,7 @@ gulp.task('solc', function() {
 gulp.task('default', ['clean'], function(cb) {
   // Uncomment 'cache-config' after 'rename-index' if you are going to use service workers.
   runSequence(
-    ['solc','copy', 'styles'],
+    ['solc', 'copy', 'styles'],
     'elements', ['jshint', 'images', 'fonts', 'html'],
     'vulcanize', 'rename-index', // 'cache-config',
     cb);

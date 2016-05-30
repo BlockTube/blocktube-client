@@ -2,3 +2,6 @@ node_modules
 dist
 bower_components
 .tmp
+app/contracts/blockPlaylist.json
+app/contracts/blockTube.json
+app/contracts/blocktubeClip.json

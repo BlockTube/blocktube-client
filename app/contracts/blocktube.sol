@@ -1,6 +1,6 @@
 /// @title Blocktu.be contract.
 
-import "./blocktubeClip.sol";
+//import "./blocktubeClip.sol";
 
 contract blockTube {
 
@@ -48,7 +48,7 @@ contract blockTube {
     }
 
     function addclip(address _clip, string _title, string _description, string _tags) {
-        clips[numClips.length++] = Clip({addr: _clip, title: _title, description: _description, tags: _tags});
+        clips[numClips] = Clip({clip: _clip, title: _title, description: _description, tags: _tags});
         numClips = numClips++;
     }
 }
