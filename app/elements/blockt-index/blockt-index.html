@@ -1,0 +1,85 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="blockt-index">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <div>Hello from <span>{{foo}}</span></div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'blockt-index',
+
+      properties: {
+        foo: {
+          type: String,
+          value: 'blockt-index',
+          notify: true
+        }
+      },
+
+      readthecontract: function(){
+        var self = this;
+      var MyContract = this.web3.eth.contract(this.contractabi);
+      var myContractInstance = MyContract.at(this.contractaddr);
+      //var totalprop = 1;
+      var totalprop = myContractInstance.numProposals().toNumber();
+      this.coincontract = myContractInstance.sharesTokenAddress();
+      var debatingperiod = myContractInstance.debatingPeriodInMinutes().toNumber();
+
+      this.proposals = [];
+      for (var i = totalprop - 1; i >= 0; i--) {
+        var _description = null;
+        //Things[i];
+        var prop = myContractInstance.proposals(i);
+        var voteactive;
+        if(prop[3].toNumber()>Math.floor(Date.now() / 1000)){
+          voteactive = true;
+        } else { 
+          voteactive = false;
+        };
+
+        //console.log(JSON.stringify(prop.Vote()));
+
+        var cleanprop = {
+          index: i,
+          recipient: prop[0],
+          amount: prop[1].toNumber(),
+          description: JSON.parse(prop[2]),
+          votingdeadline: prop[3].toNumber(),
+          votingactive: voteactive,
+          executed: prop[4],
+          passed: prop[5],
+          numberofvotes: prop[6].toNumber(),
+          proposalhash: prop[7],
+          startdate: prop[3].toNumber() - debatingperiod * 60
+        };
+        self.push('proposals', cleanprop);
+      };
+      //console.log(this.proposals);
+      var web3wallet = document.getElementById('web3wallet');
+      this.balance = web3wallet.updateBalance();
+      this.balance = Math.round(this.balance*100)/100;
+      //console.log(this.balance);
+      this.getLocalcoinBalance();
+      }
+    });
+  })();
+  </script>
+</dom-module>
