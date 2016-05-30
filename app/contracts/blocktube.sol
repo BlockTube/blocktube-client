@@ -47,8 +47,9 @@ contract blockTube {
     }
 
     function addclip(address _clip, string _title, string _description, string _tags) {
-        clips[numClips++] = Clip({addr: _clip, title: _title, description: _description, tags: _tags});
-        numClips = numClips++;
+        uint indexnum = numClips + 1;
+        clips[indexnum] = Clip({addr: _clip, title: _title, description: _description, tags: _tags});
+        numClips = indexnum;
     }
 }
 
