@@ -477,7 +477,7 @@ var reader = new FileReader();
 
       _createNewUploadContract: function(hash, fn) {
         var self = this;
-        this.contracturl = this.resolveUrl('../../contracts/upload.json');
+        this.contracturl = this.resolveUrl('../../contracts/blocktubeClip.json');
         this.importHref(this.contracturl, function(e) {
           self.contractjson = JSON.parse(e.target.import.body.innerText);
 

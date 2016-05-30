@@ -8,7 +8,7 @@ contract blockTube {
 	string public name;
     string public symbol;
     uint8 public decimals;
-    uint8 public numClips;
+    uint256 public numClips;
     uint256 public totalSupply;
 	mapping(address => uint256) public balanceOf;
     Clip[] public clips;

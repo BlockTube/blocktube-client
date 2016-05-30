@@ -71,9 +71,19 @@ contract blocktubeClip {
         shareholders[shareholders.length++] = Shareholder({addr: msg.sender, shares: _percentageforowner});
         remainingCliptokens = 100 - _percentageforowner;
         shareholdersnum = shareholders.length;
-        published = true;
+        published = false;
         //testnet blocktube contract
         //tokenaddr = 0xc6305f2c2f05e691cD973B3bb610CA9AE9a30720;
+    }
+
+    function publish(){
+        if (owner != msg.sender) return;
+        published = true;
+    }
+
+    function unpublish(){
+        if (owner != msg.sender) return;
+        published = false;
     }
 
     // When someone sends a like token to this contract's balance in the token contract,

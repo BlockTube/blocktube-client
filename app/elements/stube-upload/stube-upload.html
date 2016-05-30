@@ -25,15 +25,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
-    <template is="dom-if" if="{{ipfsuploading}}">
-      <span>Uploading</span>
-    </template>
-    <template is="dom-if" if="{{cliphash}}">
-      <span>Upload complete</span>
-    </template>
     <paper-input label="Title" bind-value="{{title}}"></paper-input>
     <paper-input label="Description" bind-value="{{description}}"></paper-input>
-    <paper-button raised on-tap="upload">upload</paper-button>
+    <paper-button raised on-tap="upload">Create blocktu.be clip</paper-button>
+
+
+    <template is="dom-if" if="{{_is(state,'uploading')}}">
+      <span>Your clips is being uploaded</span>
+    </template>
+    <template is="dom-if" if="{{_is(state,'uploadcomplete')}}">
+      <span>Upload complete</span>
+    </template>
+    <template is="dom-if" if="{{_is(state,'creatingcontract')}}">
+      <span>Creating contract for your clip</span>
+    </template>
+    <template is="dom-if" if="{{_is(state,'contractcreated')}}">
+      <span>Your clip is now ready at {{contractaddress}}</span>
+    </template>
+
   </template>
   <script>
   (function() {
@@ -55,24 +64,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: false
         },
-        ipfsuploading: {
-          type: Boolean,
-          value: false
-        },
         metadata: {
           type: Object,
           value: {},
+        },
+        contractaddress: {
+          type: String
+        },
+        state: {
+          type: String,
+          value: 'start'
         }
+      },
+
+      ready: function(){
+        this.state = 'start';
       },
 
       // this will be removed later. Temp fix to get a list of uploads
       initclips: function(){
           this.clips = [];
       },
+      
+      _is: function(a, b) {
+        if (b === undefined){
+          b = true;
+        }
+        return a === b;
+      },
 
       _uploadstart: function() {
         console.log('upload start');
-        this.ipfsuploading = true;
+        this.state = 'uploading'
+//        this.ipfsuploading = true;
       },
 
       _uploaderror: function() {
@@ -81,6 +105,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _setipfshash: function(data) {
+        this.state = 'uploadcomplete';
         console.log('got hash', this.cliphash);
         this.metadata.uploaddate = Math.floor(new Date().getTime() / 1000);
         this.metadata.video = data.detail.hash;
@@ -88,7 +113,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.metadata.filesize = data.detail.file.size;
         this.metadata.filemimetype = data.detail.file.type;
 
-        this.ipfsuploading = false;
+        //this.ipfsuploading = false;
         this.createclip();
       },
 
@@ -99,17 +124,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       createclip: function() {
         var self = this;
         if (this.readyforupload && this.cliphash) {
+
           // All is ready
           this.metadata.name = this.title;
           this.metadata.description = this.description;
 
-          console.log('ok', this.metadata);
+          console.log('clip uploaded - now upload metadata to IPFS', this.metadata);
           this.$.ipfsupload.add(JSON.stringify(this.metadata), function(err, res) {
             // Yeah man - create that contract here now please....
 
             if (!err && res[0] && res[0].Hash) {
               self._createNewUploadContract(res[0].Hash,function(err,contractaddress){
+              self.state = 'contractcreated';
                 console.log('mined!');
+                this.contractaddress = contractaddress;
+                // TODO : add this contractaddress to the index and return to your videos
                 self.push('clips',contractaddress);
               });
             } else {
@@ -133,6 +162,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var self = this;
         this.contracturl = this.resolveUrl('../../contracts/blocktubeClip.json');
         this.importHref(this.contracturl, function(e) {
+
+          this.state = 'creatingcontract';
+
           self.contractjson = JSON.parse(e.target.import.body.innerText);
 
           console.log('Creating new contract on account ', self.account);
@@ -168,9 +200,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   console.log('Your upload contract has been deployed. Your contract address is', myContract.address);
                   self.contractaddress = myContract.address;
                   //self.showtoast("Contract deployed: " + self.contractaddress);
-                  self.fire('add-toast', {
-                    msg: 'Contract deployed: ' + self.contractaddress
-                  });
+//                  self.fire('add-toast', {
+//                    msg: 'Contract deployed: ' + self.contractaddress
+//                  });
                   fn(err,self.contractaddress);
                 }
               } else {

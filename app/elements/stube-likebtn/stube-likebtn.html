@@ -56,7 +56,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       var self = this;
       
-        self.contracturl = self.resolveUrl('../../contracts/blocktube.json');
+        self.contracturl = self.resolveUrl('../../contracts/blockTube.json');
         self.importHref(self.contracturl, function(e) {
           self.contractjson = JSON.parse(e.target.import.body.innerText);
 
