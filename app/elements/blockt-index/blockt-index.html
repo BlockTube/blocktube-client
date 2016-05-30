@@ -38,7 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
         contractaddr: {
           type: String,
-          value: '0x329A247254508Ec5F3Ee8B0524026D6A9C86fC4B'
+          value: '0x84E8D45ec24CbF96344DFAEf1ed4b956C504C492'
         },
         contractabi: {
           type: Object,
@@ -52,7 +52,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var myContractInstance = MyContract.at(this.contractaddr);
         //var totalprop = 1;
         var totalclips = myContractInstance.numClips().toNumber();
-        console.log('i haz found ', totalclips, ' clips of the heart')
+        var clips = myContractInstance.clips();
+        console.log('i haz found ', totalclips, ' clips of the heart', clips);
         //this.coincontract = myContractInstance.sharesTokenAddress();
         //var debatingperiod = myContractInstance.debatingPeriodInMinutes().toNumber();
 
