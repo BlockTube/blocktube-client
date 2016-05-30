@@ -9,6 +9,14 @@ contract blockTube {
     uint8 public decimals;
     uint256 public totalSupply;
 	mapping(address => uint256) public balanceOf;
+    Clip[] public clips;
+
+    struct Clip {
+        address addr;
+        string title;
+        string description;
+        string tags;
+    }
 
 	/* This generates a public event on the blockchain that will notify clients */
     event Transfer(address indexed from, address indexed to, uint256 value);
@@ -34,6 +42,15 @@ contract blockTube {
         balanceOf[msg.sender] -= _value;                     // Subtract from the sender
         balanceOf[_to] += _value;                            // Add the same to the recipient
         Transfer(msg.sender, _to, _value);                   // Notify anyone listening that this transfer took place
+    }
+
+    function addclip(address _clip, string _title, string _description, string _tags) {
+        clips[clips.length++] = Clip({
+            clip: _clip,
+            title: _title,
+            description: _description,
+            tags: _tags
+        });
     }
 }
 
