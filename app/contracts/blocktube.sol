@@ -8,6 +8,7 @@ contract blockTube {
 	string public name;
     string public symbol;
     uint8 public decimals;
+    uint8 public numClips;
     uint256 public totalSupply;
 	mapping(address => uint256) public balanceOf;
     Clip[] public clips;
@@ -28,6 +29,7 @@ contract blockTube {
         name = _tokenName;                                   // Set the name for display purposes
         symbol = _tokenSymbol;                               // Set the symbol for display purposes
         decimals = _decimalUnits;                            // Amount of decimals for display purposes
+        numClips = 0;
     }
 
     /* Receive a like and do something with it */
@@ -46,11 +48,7 @@ contract blockTube {
     }
 
     function addclip(address _clip, string _title, string _description, string _tags) {
-        clips[clips.length++] = Clip({
-            clip: _clip,
-            title: _title,
-            description: _description,
-            tags: _tags
-        });
+        clips[numClips.length++] = Clip({addr: _clip, title: _title, description: _description, tags: _tags});
+        numClips = numClips++;
     }
 }

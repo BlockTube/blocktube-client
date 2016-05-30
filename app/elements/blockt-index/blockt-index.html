@@ -1,0 +1,97 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="blockt-index">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <div>Hello from <span>{{foo}}</span></div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'blockt-index',
+
+      properties: {
+        foo: {
+          type: String,
+          value: 'blockt-index',
+          notify: true
+        },
+        web3: {
+            type: Object,
+            observer: 'readthecontract'
+          },
+        contractaddr: {
+          type: String,
+          value: '0xC0C583E6DD9DBc242d7d06b5D16Ca0bDd95e46B2'
+        },
+        contractabi: {
+          type: Object,
+          value: [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[],"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"clips","outputs":[{"name":"addr","type":"address"},{"name":"title","type":"string"},{"name":"description","type":"string"},{"name":"tags","type":"string"}],"type":"function"},{"constant":false,"inputs":[{"name":"_clipaddr","type":"address"},{"name":"_value","type":"uint256"}],"name":"like","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"_clip","type":"address"},{"name":"_title","type":"string"},{"name":"_description","type":"string"},{"name":"_tags","type":"string"}],"name":"addclip","outputs":[],"type":"function"},{"inputs":[{"name":"_initialSupply","type":"uint256"},{"name":"_tokenName","type":"string"},{"name":"_decimalUnits","type":"uint8"},{"name":"_tokenSymbol","type":"string"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]
+        }
+      },
+
+      readthecontract: function(){
+        var self = this;
+        var MyContract = this.web3.eth.contract(this.contractabi);
+        var myContractInstance = MyContract.at(this.contractaddr);
+        //var totalprop = 1;
+        var totalclips = myContractInstance.clips();
+        console.log('i haz found ', totalclips, ' clips of the heart')
+        //this.coincontract = myContractInstance.sharesTokenAddress();
+        //var debatingperiod = myContractInstance.debatingPeriodInMinutes().toNumber();
+
+        this.clips = [];
+        for (var i = totalclips - 1; i >= 0; i--) {};
+        //   var _description = null;
+        //   //Things[i];
+        //   var clip = myContractInstance.clips(i);
+        //   if(prop[3].toNumber()>Math.floor(Date.now() / 1000)){
+        //     voteactive = true;
+        //   } else { 
+        //     voteactive = false;
+        //   };
+
+        //   //console.log(JSON.stringify(prop.Vote()));
+
+        //   var cleanprop = {
+        //     index: i,
+        //     recipient: prop[0],
+        //     amount: prop[1].toNumber(),
+        //     description: JSON.parse(prop[2]),
+        //     votingdeadline: prop[3].toNumber(),
+        //     votingactive: voteactive,
+        //     executed: prop[4],
+        //     passed: prop[5],
+        //     numberofvotes: prop[6].toNumber(),
+        //     proposalhash: prop[7],
+        //     startdate: prop[3].toNumber() - debatingperiod * 60
+        //   };
+        //   self.push('proposals', cleanprop);
+        // };
+        // //console.log(this.proposals);
+        // var web3wallet = document.getElementById('web3wallet');
+        // this.balance = web3wallet.updateBalance();
+        // this.balance = Math.round(this.balance*100)/100;
+        // //console.log(this.balance);
+        // this.getLocalcoinBalance();
+      }
+    });
+  })();
+  </script>
+</dom-module>
