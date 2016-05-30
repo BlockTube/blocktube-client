@@ -52,7 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var myContractInstance = MyContract.at(this.contractaddr);
         //var totalprop = 1;
         var totalclips = myContractInstance.numClips().toNumber();
-        var clips = myContractInstance.clips();
+        var clips = myContractInstance.clips(1);
         console.log('i haz found ', totalclips, ' clips of the heart', clips);
         //this.coincontract = myContractInstance.sharesTokenAddress();
         //var debatingperiod = myContractInstance.debatingPeriodInMinutes().toNumber();
