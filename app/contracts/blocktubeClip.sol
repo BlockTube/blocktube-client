@@ -17,9 +17,9 @@
 */
 
 // we add the token contract so later, it knows what to do.
-contract token { 
-    function transfer(address receiver, uint amount){} 
-}
+//contract token { 
+//    function transfer(address receiver, uint amount){} 
+//}
 
 contract blocktubeClip {
     
@@ -27,11 +27,14 @@ contract blocktubeClip {
     // The address of the original poster
     address public owner;
 
+    // the clip is published ? ( AKA visible in index )
+    bool public published;
+
     // The percentage of shares the original poster is willing to trade
     uint public treshold;
 
     // The contract of the Blocktube token contract
-    token public Token;
+    //token public Token;
     
     // The address of the Blocktube token contract
     address public tokenaddr;
@@ -68,8 +71,9 @@ contract blocktubeClip {
         shareholders[shareholders.length++] = Shareholder({addr: msg.sender, shares: _percentageforowner});
         remainingCliptokens = 100 - _percentageforowner;
         shareholdersnum = shareholders.length;
+        published = true;
         //testnet blocktube contract
-        tokenaddr = 0xc6305f2c2f05e691cD973B3bb610CA9AE9a30720;
+        //tokenaddr = 0xc6305f2c2f05e691cD973B3bb610CA9AE9a30720;
     }
 
     // When someone sends a like token to this contract's balance in the token contract,
@@ -86,9 +90,9 @@ contract blocktubeClip {
         } else {
             // When we have reached the treshold, the likeamount is spread over the shareholders.
             // We invoke the token contract's function 'transfer'
-            for (uint i = 0; i < shareholders.length; i++) {
-                Token.transfer(shareholders[i].addr, (_likeamount / 100 * shareholders[i].shares)); 
-            }
+            //for (uint i = 0; i < shareholders.length; i++) {
+            //    Token.transfer(shareholders[i].addr, (_likeamount / 100 * shareholders[i].shares)); 
+            //}
         }
     }
 
