@@ -112,18 +112,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Main Toolbar -->
         <paper-toolbar id="mainToolbar">
-          <iron-icon id="paperToggle" icon="av:video-library" paper-drawer-toggle></iron-icon>
+          <iron-icon id="paperToggle" src="images/touch/blocktube.png" class="hero app-name" paper-drawer-toggle></iron-icon>
+
+           <div class="middle middle-container center horizontal layout">
+        <div class="app-name"><h4>Blocktu.be</h4></div>
+        </div>
+        
           <span class="flex"></span>
 
           <!-- Toolbar icons -->
-          <a href="/newplaylist"><paper-icon-button on-tap="add" icon="add"></paper-icon-button></a>
+          <!-- <a href="/newplaylist"><paper-icon-button on-tap="add" icon="add"></paper-icon-button></a> -->
           <a href="/upload"><paper-icon-button icon="cloud-upload" on-tap="searchToggle"></paper-icon-button></a>
           <a href="/user"><img class="avatar" src="https://pbs.twimg.com/profile_images/516953365402505216/i76BUAyb.jpeg"></img></a>
 
         <!-- Application name -->
-        <div class="middle middle-container center horizontal layout">
-          <div class="app-name">Blocktu.be</div>
-        </div>
+
 
       </paper-toolbar>
 

@@ -31,6 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       #entry {
         margin: 0px;
+        padding: 10px;
       }
       .container {
       @apply(--layout-vertical);
@@ -48,12 +49,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="container vertical layout">
 
-      <div class="paper-font-body3">{{title}}</div>
-
       <stube-player videohash="{{videohash}}"></stube-player>
 
+      
       <div id="entry">
-        <div class="paper-font-body1 gris">
+      <h3>{{title}}</h3>
+      <h4>{{description}}</h4>
+        <div>
           <span>{{duration}} s</span>
           -
           <span>{{views}}</span>
@@ -62,19 +64,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <span>{{comments}}</span>
           comments
         </div>
-        <div class="paper-font-body1">{{description}}</div>
         <div class="actionbuttons">
           <paper-icon-button toggles icon="favorite" active="{{likebutton}}"></paper-icon-button>
           <stube-likebtn account="{{account}}" web3="{{web3}}"></stube-likebtn>
           <p class="paper-font-body2 gris">{{likes}}</p>
         </div>
       </div>
-      <div class="paper-font-body2 gris">
-        <span>{{username}}</span>
-        -
-        <span>{{views}}</span>
-        views
-      </div>
+   
 
       <div class="paper-font-body1">{{ipfsobject}}</div>
       <div class="paper-font-body1">{{descr}}</div>
@@ -183,6 +179,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var ipfs = window.ipfsAPI('gateway.ipfs.io',80);
 
           var buf = '';
+          //console.log('MIKE:this.hash);
           ipfs.cat(this.hash, function(err, res) {
             res
               .on('error', function(err) {
@@ -195,9 +192,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var ipfsData = JSON.parse(buf);
                 self.title = ipfsData.name;
                 self.description = ipfsData.description;
-                self.duration = ipfsData.duration;
                 self.videohash = ipfsData.video;
                 self.videourl = '';
+                console.log(ipfsData);
+
+//                 {
+// uploaddate: 1464633218,
+// video: "QmZsFqty9TtFq7EL3DWXxV1PiSDP6MKXTfYucjPuKD9YRZ",
+// filename: "Where Your Cat Goes May Blow Your Mind.mp4",
+// filesize: 44847560,
+// filemimetype: "video/mp4",
+// name: "Where your cat goes will blow your mind",
+// description: "Little docu about where cats go when you don't notice it."
+// }
               });
           });
 

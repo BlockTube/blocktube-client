@@ -11,37 +11,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 body {
   background: #101022;
   font-family: 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: white;
+  color: #333;
   padding: 30px;
 }
 
 h1 {
   color: #63C3CD;
-  line-height: 0;
 }
 
 h2 {
-  color: white;
+  color: #101022;
   font-weight: lighter;
-  line-height: 1.2;
-  max-width: 400px;
-  margin-top: 0px;
 }
 
 h3 {
   color: #63C3CD;
   font-weight: lighter;
-  line-height: 1.3;
-  max-width: 300px;
-  margin-top: -10px;
-  margin-bottom: 40px;
 }
 
 h4 {
-  color: white;
+  color: #101022;
   font-weight: lighter;
   line-height: 1;
-  margin-top: 5px;
 }
 
 .center {
@@ -77,8 +68,8 @@ a {
 }
 
 .avatar {
-        width: 30px;
-        height: 30px;
+        width: 26px;
+        height: 26px;
         border-radius: 50%;
       }
 
