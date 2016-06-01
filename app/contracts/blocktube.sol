@@ -48,9 +48,10 @@ contract blockTube {
     }
 
     function addclip(address _clip, string _title, string _description, string _tags) {
-        uint aantalclips = numClips + 1;
-        clips[aantalclips] = Clip({clip: _clip, title: _title, description: _description, tags: _tags});
-        numClips = aantalclips;
+        
+        clips.push(Clip({clip: _clip, title: _title, description: _description, tags: _tags}));
+
+        numClips = clips.length;
     }
 }
 

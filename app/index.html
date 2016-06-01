@@ -57,14 +57,14 @@
 
 <!-- This is temporary  -->
     <iron-localstorage name="blocktube-clips"
-    value="{{clips}}"
+    value="{{localsclips}}"
     on-iron-localstorage-load-empty="initclips"
   ></iron-localstorage>
 
 
     <web3-wallet id="web3wallet" keystore="{{keystore}}" walletname="blocktube-demo" password="test" web3="{{web3}}" host="{{host}}"  balance="{{balance}}" account="{{account}}"></web3-wallet>
 
-    <blockt-index web3="{{web3}}"></blockt-index>
+    <blockt-index clips="{{clips}}" web3="{{web3}}"></blockt-index>
 
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
@@ -139,7 +139,7 @@
               <h1 class="paper-font-headline">sponnet Channel</h1>
 
               <template is="dom-repeat" items="{{clips}}">
-                <stube-item contract="{{item}}" web3="{{web3}}" account="{{account}}"></stube-item>
+                <stube-item contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
               </template>
 
             </paper-material>
