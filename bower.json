@@ -10,7 +10,8 @@
     "page": "visionmedia/page.js#~1.6.3",
     "web3-wallet": "~0.0.2",
     "ipfs-upload": "^0.0.13",
-    "excess-router": "^0.9.14"
+    "excess-router": "^0.9.14",
+    "iron-meta": "^1.1.1"
   },
   "devDependencies": {}
 }

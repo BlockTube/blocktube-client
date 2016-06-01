@@ -49,14 +49,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="container vertical layout">
 
-     <!--  <h1>TEST<span>{{contract}}</span></h1> -->
+      <!--  <h1>
+      TEST
+      <span>{{contract}}</span>
+    </h1>
+    -->
+    <stube-player videohash="{{videohash}}"></stube-player>
 
-      <stube-player videohash="{{videohash}}"></stube-player>
+    <div id="entry">
+      <template is="dom-if" if="{{!title}}">
+        <h3>Loading</h3>
+      </template>
+      <template is="dom-if" if="{{title}}">
 
-      
-      <div id="entry">
-      <h3>{{title}}</h3>
-      <h4>{{description}}</h4>
+        <h3>{{title}}</h3>
+        <h4>{{description}}</h4>
+        <h4>tags: {{tags}}</h4>
+
         <div>
           <span>{{duration}} s</span>
           -
@@ -71,16 +80,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <stube-likebtn account="{{account}}" web3="{{web3}}"></stube-likebtn>
           <p class="paper-font-body2 gris">{{likes}}</p>
         </div>
-      </div>
-   
 
-      <div class="paper-font-body1">{{ipfsobject}}</div>
-      <div class="paper-font-body1">{{descr}}</div>
-      <div></div>
+      </template>
     </div>
-  </template>
+    <div class="paper-font-body1">{{ipfsobject}}</div>
+    <div class="paper-font-body1">{{descr}}</div>
+    <div></div>
+  </div>
+</template>
 
-  <script>
+<script>
     (function() {
       'use strict';
       
@@ -102,12 +111,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           title: {
             type: String,
-            value: 'Loading ipfs',
+            //value: 'Loading ipfs',
             notify: true
           },
           description: {
             type: String,
-            value: 'Loading ipfs',
+            //value: 'Loading ipfs',
             notify: true
           },
           views: {
@@ -197,6 +206,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 self.description = ipfsData.description;
                 self.videohash = ipfsData.video;
                 self.videourl = '';
+                self.tags = ipfsData.tags;
                 console.log(ipfsData);
 
 //                 {
