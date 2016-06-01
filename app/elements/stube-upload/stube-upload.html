@@ -133,6 +133,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.metadata.filename = data.detail.file.name;
         this.metadata.filesize = data.detail.file.size;
         this.metadata.filemimetype = data.detail.file.type;
+        this.metadata.tags = this.tags;
 
         //this.ipfsuploading = false;
         this.createclip();
@@ -158,9 +159,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               self._createNewUploadContract(res[0].Hash,function(err,contractaddress){
               self.state = 'contractcreated';
                 console.log('mined!');
-                this.contractaddress = contractaddress;
+                self.contractaddress = contractaddress;
                 // TODO : add this contractaddress to the index and return to your videos
                 self.push('clips',contractaddress);
+                self._addtoIndexContract(contractaddress);
               });
             } else {
               console.log('error uploading metadata to IPFS', err);
@@ -195,7 +197,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             var MyContract = self.web3.eth.contract(self.contractjson.abi);
             //var contractInstance = 
-            MyContract.new(hash, 100, 50, {
+            MyContract.new(hash, 0, parseInt(self.clipshares), {
               from: self.fixaddress(self.account),
               gasPrice: gasPrice,
               gasLimit: 3000000,
@@ -243,6 +245,58 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       },
 
+    _addtoIndexContract: function(contractaddress) {
+      var self = this;
+      debugger;
+      this.contracturl = this.resolveUrl('../../contracts/blockTube.json');
+      this.importHref(this.contracturl, function(e) {
+
+        this.state = 'creatingcontract';
+
+        self.contractjson = JSON.parse(e.target.import.body.innerText);
+
+        console.log('Adding to index contract on account ', self.account);
+
+        this.web3.eth.getGasPrice(function(err, result) {
+          var gasPrice = result.toNumber(10);
+
+          var MyContract = self.web3.eth.contract(self.contractjson.abi);
+
+          var myContractInstance = MyContract.at('0x');
+
+          var options = {
+            from: self.account,
+            //value: 1 * 1e18,
+            gas: 100000,
+            gasPrice: gasPrice,
+            nonce: Math.floor(Math.random(999999)) + new Date().getTime(),
+          };
+
+          var result = myContractInstance.addclip.sendTransaction(contractaddress, self.title, self.description, self.tags, {
+              from: self.fixaddress(self.account),
+              gasPrice: gasPrice,
+              gasLimit: 3000000,
+              gas: 2000000,
+              data: self.contractjson.bytecode
+            },
+            function(err, result) {
+              if (err != null) {
+                console.log(err);
+                console.log("ERROR: Transaction didn't go through. See console.");
+              } else {
+                console.log("Transaction Successful!");
+                console.log('Tx hash=', result);
+                // set vote status to TxHash received 
+                self.votestatus = 2;
+                self.transactionHash = result;
+              }
+            });
+        });
+
+      }, function(e) {
+        console.log('ERROR!', e);
+      });
+    },
     });
   })();
   </script>
