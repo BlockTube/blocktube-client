@@ -27,6 +27,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
     <paper-input label="Title" bind-value="{{title}}"></paper-input>
     <paper-input label="Description" bind-value="{{description}}"></paper-input>
+    <paper-input label="Tags" bind-value="{{tags}}"></paper-input>
+    <paper-input label="Clipshares" bind-value="{{clipshares}}"></paper-input>
+    <template is="dom-repeat" items="{{tagsarray}}">
+      <li>{{item}}</li>
+    </template>
     <paper-button raised on-tap="upload">Create blocktu.be clip</paper-button>
 
 
@@ -55,6 +60,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         web3: {
           type: Object,
           observer: '_web3'
+        },
+        tags: {
+          type: String,
+          observer: '_tagsparser'
         },
         cliphash: {
           type: String,
@@ -102,6 +111,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _uploaderror: function() {
         console.log('error uploading');
         this.ipfsuploading = false;
+      },
+
+      _tagsparser: function(){
+
+          var intags = this.tags.split(',');
+          if (intags){
+            var tmptags = [];
+            intags.forEach(function(tag){
+              tmptags.push(tag);
+            }.bind(this));
+            this.tagsarray = tmptags;
+          }
       },
 
       _setipfshash: function(data) {
