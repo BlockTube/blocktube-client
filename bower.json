@@ -12,8 +12,7 @@
     "ipfs-upload": "^0.0.13",
     "excess-router": "^0.9.14",
     "iron-meta": "^1.1.1",
-    "locals-progress": "https://github.com/locals-world/locals-progress.git",
-    "videojs-thumbnails": "https://github.com/brightcove/videojs-thumbnails.git#^0.1.1"
+    "locals-progress": "https://github.com/locals-world/locals-progress.git"
   },
   "devDependencies": {}
 }
