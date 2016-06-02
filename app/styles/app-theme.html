@@ -22,18 +22,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   /* Application theme */
 
   :root {
-  --bt-blue: #101022;
 
-  --bt-font: {
-      font-family: 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      font-weight: 100;
+    --bt-blue: #101022;
+    --bt-lightblue:#63C3CD;
+    --bt-orange:#F26728;
+
+    --bt-font: {
+        font-family: 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        font-weight: 100;
     };
 
-  background-color: var(--bt-blue);
+    background-color: var(--bt-blue);
+    color:white;
+
   }
 
+
+
+  #drawerToolbar, .drawer {
+    background-color: var(--bt-blue);
+  }
   
+  paper-menu a {
+    @apply(--layout-horizontal);
+    @apply(--layout-center);
+
+    color:var(--bt-lightblue);
+    background-color: var(--bt-blue);
+
+    text-decoration: none;
+    color: var(--menu-link-color);
+    font-family: 'Roboto', 'Noto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    min-height: 48px;
+    padding: 0 16px;
+    margin: 0px;
+  }
+
+
   .top {
     background-color: var(--bt-blue);
     width: 100vw;
