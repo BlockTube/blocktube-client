@@ -8,32 +8,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 
 
+
+
 body {
-  background: #101022;
-  font-family: 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #333;
-  padding: 30px;
+/*  background: #101022;*/
 }
 
-h1 {
-  color: #63C3CD;
-}
-
-h2 {
-  color: #101022;
-  font-weight: lighter;
-}
-
-h3 {
-  color: #63C3CD;
-  font-weight: lighter;
-}
-
-h4 {
-  color: white;
-  font-weight: lighter;
-  line-height: 1;
-}
 
 .center {
   text-align: center;
