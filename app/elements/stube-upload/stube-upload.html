@@ -104,7 +104,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _uploadstart: function() {
         console.log('upload start');
-        this.state = 'uploading'
+        this.state = 'uploading';
 //        this.ipfsuploading = true;
       },
 
@@ -247,7 +247,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     _addtoIndexContract: function(contractaddress) {
       var self = this;
-      debugger;
+    
       this.contracturl = this.resolveUrl('../../contracts/blockTube.json');
       this.importHref(this.contracturl, function(e) {
 
@@ -264,15 +264,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           var myContractInstance = MyContract.at('0xC4946E241ab66cDa428581cF2624f8cc6E4a7B72');
 
-          var options = {
-            from: self.account,
-            //value: 1 * 1e18,
-            gas: 100000,
-            gasPrice: gasPrice,
-            nonce: Math.floor(Math.random(999999)) + new Date().getTime(),
-          };
+          // var options = {
+          //   from: self.account,
+          //   //value: 1 * 1e18,
+          //   gas: 100000,
+          //   gasPrice: gasPrice,
+          //   nonce: Math.floor(Math.random(999999)) + new Date().getTime(),
+          // };
 
-          var result = myContractInstance.addclip.sendTransaction(contractaddress, self.title, self.description, self.tags, {
+          result = myContractInstance.addclip.sendTransaction(contractaddress, self.title, self.description, self.tags, {
               from: self.fixaddress(self.account),
               gasPrice: gasPrice,
               gasLimit: 3000000,
@@ -280,11 +280,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               data: self.contractjson.bytecode
             },
             function(err, result) {
-              if (err != null) {
+              if (err !== null) {
                 console.log(err);
-                console.log("ERROR: Transaction didn't go through. See console.");
+                console.log('ERROR: Transaction didnt go through. See console.');
               } else {
-                console.log("Transaction Successful!");
+                console.log('Transaction Successful!');
                 console.log('Tx hash=', result);
                 // set vote status to TxHash received 
                 self.votestatus = 2;

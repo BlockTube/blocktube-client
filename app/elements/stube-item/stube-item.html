@@ -47,8 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
     </style>
 
-
-<iron-localstorage name="itemcache"
+    <iron-localstorage id="lscache" name="itemcache"
     value="{{itemcache}}"
     on-iron-localstorage-load="itemcacheloaded"
     on-iron-localstorage-load-empty="itemcacheloadedempty"
@@ -60,17 +59,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <h4>{{description}}</h4>
       </div>
     </template>
+    <!-- BAN jonge.... hier gade gij plezier aan beleven zenne -->
 
     <template is="dom-if" if="{{!listitem}}">
 
-      <div class="container vertical layout">        
+      <div class="container vertical layout">
 
-
-        <!--  <h1>
-        TEST
-        <span>{{contract}}</span>
-      </h1>
-      -->
       <stube-player videohash="{{videohash}}"></stube-player>
 
       <div id="entry">
@@ -243,11 +237,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         attached: function() {
 
+          this.$.lscache.name = 'itemcache-' + this.hash;
 
           var ipfsData;
           if (!this.hash){
             return console.log('hash not available YET');
           }
+
           if (this.itemcache[this.hash]) {
             console.log('cache HIT', this.hash);
             ipfsData = this.itemcache[this.hash];
@@ -272,7 +268,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 .on('end', function() {
                   var ipfsData = JSON.parse(buf);
                   self.populate(ipfsData);
-                  self.set("itemcache."+self.hash,ipfsData);
+                  self.set('itemcache.'+self.hash,ipfsData);
                 });
             });
           }

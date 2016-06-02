@@ -337,7 +337,7 @@ gulp.task('solc', function() {
     var solc = require('solc');
     var input = allfiles;
     var output = solc.compile(input, 1); // 1 activates the optimiser
-    console.log(output);
+    //console.log(output);
     for (var contractName in output.contracts) {
       var data = {
         bytecode: output.contracts[contractName].bytecode,
