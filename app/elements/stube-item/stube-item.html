@@ -47,8 +47,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
     </style>
 
-    <template is="dom-if" if="{{listitem}}">
 
+<iron-localstorage name="itemcache"
+    value="{{itemcache}}"
+    on-iron-localstorage-load="itemcacheloaded"
+    on-iron-localstorage-load-empty="itemcacheloadedempty"
+  ></iron-localstorage>
+
+    <template is="dom-if" if="{{listitem}}">
       <div class="vertical layout" on-tap="firelisttap">
         <h3>{{title}}</h3>
         <h4>{{description}}</h4>
@@ -57,48 +63,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <template is="dom-if" if="{{!listitem}}">
 
-    <div class="container vertical layout">
+      <div class="container vertical layout">        
 
-<iron-localstorage name="itemcache"
-    value="{{itemcache}}"
-    on-iron-localstorage-load="itemcacheloaded"
-    on-iron-localstorage-load-empty="itemcacheloadedempty"
-  ></iron-localstorage>
 
-      <!--  <h1>
-      TEST
-      <span>{{contract}}</span>
-    </h1>
-    -->
-    <stube-player videohash="{{videohash}}"></stube-player>
+        <!--  <h1>
+        TEST
+        <span>{{contract}}</span>
+      </h1>
+      -->
+      <stube-player videohash="{{videohash}}"></stube-player>
 
-    <div id="entry">
-      <template is="dom-if" if="{{!title}}">
-        <h3>Loading</h3>
-      </template>
-      <template is="dom-if" if="{{title}}">
+      <div id="entry">
+        <template is="dom-if" if="{{!title}}">
+          <h3>Loading</h3>
+        </template>
+        <template is="dom-if" if="{{title}}">
 
-        <h3>{{title}}</h3>
-        <h4>{{description}}</h4>
-        <h4>tags: {{tags}}</h4>
+          <h3>{{title}}</h3>
+          <h4>{{description}}</h4>
+          <h4>tags: {{tags}}</h4>
 
-        <div>
-          <span>{{duration}} s</span>
-          -
-          <span>{{views}}</span>
-          views
+          <div>
+            <span>{{duration}} s</span>
+            -
+            <span>{{views}}</span>
+            views
     -
-          <span>{{comments}}</span>
-          comments
-        </div>
-        <div class="actionbuttons">
-          <paper-icon-button toggles icon="favorite" active="{{likebutton}}"></paper-icon-button>
-          <stube-likebtn account="{{account}}" web3="{{web3}}"></stube-likebtn>
-          <p class="paper-font-body2 gris">{{likes}}</p>
-        </div>
+            <span>{{comments}}</span>
+            comments
+          </div>
+          <div class="actionbuttons">
+            <paper-icon-button toggles icon="favorite" active="{{likebutton}}"></paper-icon-button>
+            <stube-likebtn account="{{account}}" web3="{{web3}}"></stube-likebtn>
+            <p class="paper-font-body2 gris">{{likes}}</p>
+          </div>
 
-      </template>
-    </div>
+        </template>
+      </div>
     </template>
 
     <div class="paper-font-body1">{{ipfsobject}}</div>
@@ -106,7 +107,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div></div>
   </div>
 </template>
->>>>>>> origin/master
 
 <script>
     (function() {
@@ -120,6 +120,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
         properties: {
+          itemcache: {
+            type: Object,
+            //observer: 'itemcacheloaded'            
+          },
           web3: {
             type: Object,
             observer: '_web3'
@@ -179,6 +183,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         },
 
+        ready: function(){
+
+        },
+
         hitMe: function(){
           //this.fire('go', { msg: "/clip/hash1" });
           //location ="/clip/hash1";
@@ -192,6 +200,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         _contract: function(){
           console.log('got contract: ', this.contract);
+          this.loadcontract();
         },
 
         firelisttap: function(){
@@ -203,6 +212,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         itemcacheloaded: function(){
+          console.log('web3',this.web3===null);
+          console.log('contract',this.contract===null);
           this.loadcontract();
         },
 
@@ -231,12 +242,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         attached: function() {
+
+
           var ipfsData;
+          if (!this.hash){
+            return console.log('hash not available YET');
+          }
           if (this.itemcache[this.hash]) {
             console.log('cache HIT', this.hash);
             ipfsData = this.itemcache[this.hash];
             return this.populate(ipfsData);
           } else {
+
             console.log('cache MISS', this.hash);
 
             var self = this;
