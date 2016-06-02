@@ -139,11 +139,15 @@
               <h1 class="paper-font-headline">sponnet Channel</h1>
 
               <template is="dom-repeat" items="{{clips}}">
-                <stube-item contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
+                <stube-item on-item-tapped="gotoClip" listitem id="{{item.address}}" contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
               </template>
 
             </paper-material>
 
+          </section>
+
+          <section data-route="clip">
+            <stube-item contract="{{params.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
           </section>
 
           <section data-route="upload">
@@ -160,9 +164,7 @@
             </paper-material>
           </section>
 
-          <section data-route="clip">
-            <stube-clip ipfsobject="{{params.hash}}"></stube-clip>
-          </section>
+          
 
          <!--  <section data-route="contact">
             <paper-material elevation="1">

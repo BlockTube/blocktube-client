@@ -47,6 +47,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
     </style>
 
+    <template is="dom-if" if="{{listitem}}">
+
+      <div class="vertical layout" on-tap="firelisttap">
+        <h3>{{title}}</h3>
+        <h4>{{description}}</h4>
+      </div>
+    </template>
+
+    <template is="dom-if" if="{{!listitem}}">
+
     <div class="container vertical layout">
 
      <!--  <h1>TEST<span>{{contract}}</span></h1> -->
@@ -78,6 +88,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div class="paper-font-body1">{{descr}}</div>
       <div></div>
     </div>
+    </template>
   </template>
 
   <script>
@@ -135,6 +146,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             notify:true
 
           },
+          listitem: {
+            type: Boolean,
+            value: false
+          },
           likebutton: {
           type: Boolean,
           observer: '_likebutton',
@@ -146,7 +161,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         },
-        
+
         hitMe: function(){
           //this.fire('go', { msg: "/clip/hash1" });
           //location ="/clip/hash1";
@@ -160,6 +175,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         _contract: function(){
           console.log('got contract: ', this.contract);
+        },
+
+        firelisttap: function(){
+          this.fire('item-tapped', this.contract);
         },
 
         _web3: function(){
