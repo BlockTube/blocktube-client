@@ -9,7 +9,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../../bower_components/ipfs-upload/ipfs-upload.html">
+<!-- <link href="../../bower_components/videojs-thumbnails/videojs.thumbnails.css" rel="stylesheet">
+<script src="../../bower_components/videojs-thumbnails/node_modules/video.js/dist/video-js/video.js"></script>
+
+<script src='../../bower_components/videojs-thumbnails/videojs.thumbnails.js'></script> -->
 
 <dom-module id="stube-upload">
   <template>
@@ -22,9 +28,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
+        background-color: #666;
       }
+
     </style>
+    <paper-material>
+
     <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
+
+    <!-- <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload> -->
+
+    <paper-progress  value="50" max="100"></paper-progress>
+
     <paper-input label="Title" bind-value="{{title}}"></paper-input>
     <paper-input label="Description" bind-value="{{description}}"></paper-input>
     <paper-input label="Tags" bind-value="{{tags}}"></paper-input>
@@ -32,13 +47,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-repeat" items="{{tagsarray}}">
       <li>{{item}}</li>
     </template>
-    <paper-button raised on-tap="upload">Create blocktu.be clip</paper-button>
+    <paper-button raised on-tap="upload" disable="{{ipfsready}}">Create blocktu.be clip</paper-button>
 
 
     <template is="dom-if" if="{{_is(state,'uploading')}}">
-      <span>Your clips is being uploaded</span>
+      <span>Your clip is being uploaded</span>
     </template>
     <template is="dom-if" if="{{_is(state,'uploadcomplete')}}">
+    <video id="video"
+       width="640"
+       height="264"
+       controls>
+  <source src='{{newvideo}}' />
+</video>
       <span>Upload complete</span>
     </template>
     <template is="dom-if" if="{{_is(state,'creatingcontract')}}">
@@ -47,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-if" if="{{_is(state,'contractcreated')}}">
       <span>Your clip is now ready at {{contractaddress}}</span>
     </template>
-
+  </paper-material>
   </template>
   <script>
   (function() {
@@ -83,6 +104,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         state: {
           type: String,
           value: 'start'
+        },
+        ipfsready: {
+          type: Boolean,
+          value: false
         }
       },
 
@@ -127,6 +152,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _setipfshash: function(data) {
         this.state = 'uploadcomplete';
+        this.ipfsready = true;
         console.log('got hash', this.cliphash);
         this.metadata.uploaddate = Math.floor(new Date().getTime() / 1000);
         this.metadata.video = data.detail.hash;
@@ -136,6 +162,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.metadata.tags = this.tags;
 
         //this.ipfsuploading = false;
+
+        this.newvideo = 'http://gateway.ipfs.io/ipfs/'+this.metadata.video;
         this.createclip();
       },
 
@@ -300,4 +328,5 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
   })();
   </script>
+  
 </dom-module>

@@ -71,5 +71,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.host = 'http://109.123.70.141:8545';
+  //app.host = 'http://localhost:8545';
 
 })(document);
