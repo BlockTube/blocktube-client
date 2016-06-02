@@ -8,7 +8,7 @@ contract blockTube {
 	string public name;
     string public symbol;
     uint8 public decimals;
-    uint256 public numClips;
+    uint public numClips;
     uint256 public totalSupply;
 	mapping(address => uint256) public balanceOf;
     Clip[] public clips;
@@ -48,7 +48,9 @@ contract blockTube {
     }
 
     function addclip(address _clip, string _title, string _description, string _tags) {
-        clips[numClips] = Clip({clip: _clip, title: _title, description: _description, tags: _tags});
-        numClips = numClips++;
+        
+        clips.push(Clip({clip: _clip, title: _title, description: _description, tags: _tags}));
+
+        numClips = clips.length;
     }
 }

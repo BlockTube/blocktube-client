@@ -269,7 +269,7 @@ gulp.task('serve', ['styles', 'elements', 'images'], function() {
 // Build and serve the output from the dist build
 gulp.task('serve:dist', ['default'], function() {
   browserSync({
-    port: 5001,
+    port: 8081,
     notify: false,
     logPrefix: 'PSK',
     snippetOptions: {
@@ -337,7 +337,7 @@ gulp.task('solc', function() {
     var solc = require('solc');
     var input = allfiles;
     var output = solc.compile(input, 1); // 1 activates the optimiser
-    console.log(output);
+    //console.log(output);
     for (var contractName in output.contracts) {
       var data = {
         bytecode: output.contracts[contractName].bytecode,

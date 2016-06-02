@@ -9,7 +9,11 @@
     "neon-elements": "PolymerElements/neon-elements#^1.0.0",
     "page": "visionmedia/page.js#~1.6.3",
     "web3-wallet": "~0.0.2",
-    "ipfs-upload": "^0.0.13"
+    "ipfs-upload": "^0.0.13",
+    "excess-router": "^0.9.14",
+    "iron-meta": "^1.1.1",
+    "locals-progress": "https://github.com/locals-world/locals-progress.git",
+    "videojs-thumbnails": "https://github.com/brightcove/videojs-thumbnails.git#^0.1.1"
   },
   "devDependencies": {}
 }

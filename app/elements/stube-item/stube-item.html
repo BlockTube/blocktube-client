@@ -47,38 +47,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
     </style>
 
-    <div class="container vertical layout">
+    <iron-localstorage id="lscache" name="itemcache"
+    value="{{itemcache}}"
+    on-iron-localstorage-load="itemcacheloaded"
+    on-iron-localstorage-load-empty="itemcacheloadedempty"
+  ></iron-localstorage>
+
+    <template is="dom-if" if="{{listitem}}">
+      <div class="vertical layout" on-tap="firelisttap">
+        <h3>{{title}}</h3>
+        <h4>{{description}}</h4>
+      </div>
+    </template>
+    <!-- BAN jonge.... hier gade gij plezier aan beleven zenne -->
+
+    <template is="dom-if" if="{{!listitem}}">
+
+      <div class="container vertical layout">
 
       <stube-player videohash="{{videohash}}"></stube-player>
 
-      
       <div id="entry">
-      <h3>{{title}}</h3>
-      <h4>{{description}}</h4>
-        <div>
-          <span>{{duration}} s</span>
-          -
-          <span>{{views}}</span>
-          views
+        <template is="dom-if" if="{{!title}}">
+          <h3>Loading</h3>
+        </template>
+        <template is="dom-if" if="{{title}}">
+
+          <h3>{{title}}</h3>
+          <h4>{{description}}</h4>
+          <h4>tags: {{tags}}</h4>
+
+          <div>
+            <span>{{duration}} s</span>
+            -
+            <span>{{views}}</span>
+            views
     -
-          <span>{{comments}}</span>
-          comments
-        </div>
-        <div class="actionbuttons">
-          <paper-icon-button toggles icon="favorite" active="{{likebutton}}"></paper-icon-button>
-          <stube-likebtn account="{{account}}" web3="{{web3}}"></stube-likebtn>
-          <p class="paper-font-body2 gris">{{likes}}</p>
-        </div>
+            <span>{{comments}}</span>
+            comments
+          </div>
+          <div class="actionbuttons">
+            <paper-icon-button toggles icon="favorite" active="{{likebutton}}"></paper-icon-button>
+            <stube-likebtn account="{{account}}" web3="{{web3}}"></stube-likebtn>
+            <p class="paper-font-body2 gris">{{likes}}</p>
+          </div>
+
+        </template>
       </div>
-   
+    </template>
 
-      <div class="paper-font-body1">{{ipfsobject}}</div>
-      <div class="paper-font-body1">{{descr}}</div>
-      <div></div>
-    </div>
-  </template>
+    <div class="paper-font-body1">{{ipfsobject}}</div>
+    <div class="paper-font-body1">{{descr}}</div>
+    <div></div>
+  </div>
+</template>
 
-  <script>
+<script>
     (function() {
       'use strict';
       
@@ -90,6 +114,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
         properties: {
+          itemcache: {
+            type: Object,
+            //observer: 'itemcacheloaded'            
+          },
           web3: {
             type: Object,
             observer: '_web3'
@@ -100,12 +128,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           title: {
             type: String,
-            value: 'Loading ipfs',
+            //value: 'Loading ipfs',
             notify: true
           },
           description: {
             type: String,
-            value: 'Loading ipfs',
+            //value: 'Loading ipfs',
             notify: true
           },
           views: {
@@ -133,6 +161,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             notify:true
 
           },
+          listitem: {
+            type: Boolean,
+            value: false
+          },
           likebutton: {
           type: Boolean,
           observer: '_likebutton',
@@ -144,6 +176,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         },
+
+        ready: function(){
+
+        },
+
         hitMe: function(){
           //this.fire('go', { msg: "/clip/hash1" });
           //location ="/clip/hash1";
@@ -157,10 +194,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         _contract: function(){
           console.log('got contract: ', this.contract);
+          this.loadcontract();
+        },
+
+        firelisttap: function(){
+          this.fire('item-tapped', this.contract);
         },
 
         _web3: function(){
-          if(this.contract){
+          this.loadcontract();
+        },
+
+        itemcacheloaded: function(){
+          console.log('web3',this.web3===null);
+          console.log('contract',this.contract===null);
+          this.loadcontract();
+        },
+
+        itemcacheloadedempty: function(){
+          this.itemcache = {};
+          this.loadcontract();
+        },
+
+        loadcontract: function(){
+          if (this.web3 && this.itemcache && this.contract){
             var myclipContract = this.web3.eth.contract(this.contractabi);
             var myclipContractInstance = myclipContract.at(this.contract);
             this.hash = myclipContractInstance.ipfsclipobject().toString();
@@ -169,44 +226,52 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         },
 
+        populate: function(ipfsData) {
+          var self=this;
+          self.title = ipfsData.name;
+          self.description = ipfsData.description;
+          self.videohash = ipfsData.video;
+          self.videourl = '';
+          self.tags = ipfsData.tags;
+        },
+
         attached: function() {
 
-          //this.$.ajax.url = 'https://gateway.ipfs.io/ipfs/' + this.hash;
-          //console.log('requesting URL', this.$.ajax.url);
-          //this.$.ajax.url = 'http://localhost:8080/ipfs/'+this.hash;
-          //this.$.ajax.generateRequest();
-          var self = this;
-          var ipfs = window.ipfsAPI('gateway.ipfs.io',80);
+          this.$.lscache.name = 'itemcache-' + this.hash;
 
-          var buf = '';
-          //console.log('MIKE:this.hash);
-          ipfs.cat(this.hash, function(err, res) {
-            res
-              .on('error', function(err) {
-                throw(err);
-              })
-              .on('data', function(data) {
-                buf += data;
-              })
-              .on('end', function() {
-                var ipfsData = JSON.parse(buf);
-                self.title = ipfsData.name;
-                self.description = ipfsData.description;
-                self.videohash = ipfsData.video;
-                self.videourl = '';
-                console.log(ipfsData);
+          var ipfsData;
+          if (!this.hash){
+            return console.log('hash not available YET');
+          }
 
-//                 {
-// uploaddate: 1464633218,
-// video: "QmZsFqty9TtFq7EL3DWXxV1PiSDP6MKXTfYucjPuKD9YRZ",
-// filename: "Where Your Cat Goes May Blow Your Mind.mp4",
-// filesize: 44847560,
-// filemimetype: "video/mp4",
-// name: "Where your cat goes will blow your mind",
-// description: "Little docu about where cats go when you don't notice it."
-// }
-              });
-          });
+          if (this.itemcache[this.hash]) {
+            console.log('cache HIT', this.hash);
+            ipfsData = this.itemcache[this.hash];
+            return this.populate(ipfsData);
+          } else {
+
+            console.log('cache MISS', this.hash);
+
+            var self = this;
+            var ipfs = window.ipfsAPI('gateway.ipfs.io', 80);
+
+            var buf = '';
+            //console.log('MIKE:this.hash);
+            ipfs.cat(this.hash, function(err, res) {
+              res
+                .on('error', function(err) {
+                  throw (err);
+                })
+                .on('data', function(data) {
+                  buf += data;
+                })
+                .on('end', function() {
+                  var ipfsData = JSON.parse(buf);
+                  self.populate(ipfsData);
+                  self.set('itemcache.'+self.hash,ipfsData);
+                });
+            });
+          }
 
 
         },

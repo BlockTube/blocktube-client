@@ -5,3 +5,8 @@ bower_components
 app/contracts/blockPlaylist.json
 app/contracts/blockTube.json
 app/contracts/blocktubeClip.json
+scripts/a.avi
+scripts/a.avi-360.avi
+scripts/b.avi
+scripts/c.avi
+scripts/c.mp4

@@ -9,7 +9,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../../bower_components/ipfs-upload/ipfs-upload.html">
+<!-- <link href="../../bower_components/videojs-thumbnails/videojs.thumbnails.css" rel="stylesheet">
+<script src="../../bower_components/videojs-thumbnails/node_modules/video.js/dist/video-js/video.js"></script>
+
+<script src='../../bower_components/videojs-thumbnails/videojs.thumbnails.js'></script> -->
 
 <dom-module id="stube-upload">
   <template>
@@ -22,18 +28,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
+        background-color: #666;
       }
+
     </style>
+    <paper-material>
+
     <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
+
+    <!-- <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload> -->
+
+    <paper-progress  value="50" max="100"></paper-progress>
+
     <paper-input label="Title" bind-value="{{title}}"></paper-input>
     <paper-input label="Description" bind-value="{{description}}"></paper-input>
-    <paper-button raised on-tap="upload">Create blocktu.be clip</paper-button>
+    <paper-input label="Tags" bind-value="{{tags}}"></paper-input>
+    <paper-input label="Clipshares" bind-value="{{clipshares}}"></paper-input>
+    <template is="dom-repeat" items="{{tagsarray}}">
+      <li>{{item}}</li>
+    </template>
+    <paper-button raised on-tap="upload" disable="{{ipfsready}}">Create blocktu.be clip</paper-button>
 
 
     <template is="dom-if" if="{{_is(state,'uploading')}}">
-      <span>Your clips is being uploaded</span>
+      <span>Your clip is being uploaded</span>
     </template>
     <template is="dom-if" if="{{_is(state,'uploadcomplete')}}">
+    <video id="video"
+       width="640"
+       height="264"
+       controls>
+  <source src='{{newvideo}}' />
+</video>
       <span>Upload complete</span>
     </template>
     <template is="dom-if" if="{{_is(state,'creatingcontract')}}">
@@ -42,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-if" if="{{_is(state,'contractcreated')}}">
       <span>Your clip is now ready at {{contractaddress}}</span>
     </template>
-
+  </paper-material>
   </template>
   <script>
   (function() {
@@ -55,6 +81,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         web3: {
           type: Object,
           observer: '_web3'
+        },
+        tags: {
+          type: String,
+          observer: '_tagsparser'
         },
         cliphash: {
           type: String,
@@ -74,6 +104,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         state: {
           type: String,
           value: 'start'
+        },
+        ipfsready: {
+          type: Boolean,
+          value: false
         }
       },
 
@@ -95,7 +129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _uploadstart: function() {
         console.log('upload start');
-        this.state = 'uploading'
+        this.state = 'uploading';
 //        this.ipfsuploading = true;
       },
 
@@ -104,16 +138,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.ipfsuploading = false;
       },
 
+      _tagsparser: function(){
+
+          var intags = this.tags.split(',');
+          if (intags){
+            var tmptags = [];
+            intags.forEach(function(tag){
+              tmptags.push(tag);
+            }.bind(this));
+            this.tagsarray = tmptags;
+          }
+      },
+
       _setipfshash: function(data) {
         this.state = 'uploadcomplete';
+        this.ipfsready = true;
         console.log('got hash', this.cliphash);
         this.metadata.uploaddate = Math.floor(new Date().getTime() / 1000);
         this.metadata.video = data.detail.hash;
         this.metadata.filename = data.detail.file.name;
         this.metadata.filesize = data.detail.file.size;
         this.metadata.filemimetype = data.detail.file.type;
+        this.metadata.tags = this.tags;
 
         //this.ipfsuploading = false;
+
+        this.newvideo = 'http://gateway.ipfs.io/ipfs/'+this.metadata.video;
         this.createclip();
       },
 
@@ -137,9 +187,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               self._createNewUploadContract(res[0].Hash,function(err,contractaddress){
               self.state = 'contractcreated';
                 console.log('mined!');
-                this.contractaddress = contractaddress;
+                self.contractaddress = contractaddress;
                 // TODO : add this contractaddress to the index and return to your videos
                 self.push('clips',contractaddress);
+                self._addtoIndexContract(contractaddress);
               });
             } else {
               console.log('error uploading metadata to IPFS', err);
@@ -174,7 +225,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             var MyContract = self.web3.eth.contract(self.contractjson.abi);
             //var contractInstance = 
-            MyContract.new(hash, 100, 50, {
+            MyContract.new(hash, 0, parseInt(self.clipshares), {
               from: self.fixaddress(self.account),
               gasPrice: gasPrice,
               gasLimit: 3000000,
@@ -222,7 +273,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       },
 
+    _addtoIndexContract: function(contractaddress) {
+      var self = this;
+    
+      this.contracturl = this.resolveUrl('../../contracts/blockTube.json');
+      this.importHref(this.contracturl, function(e) {
+
+        this.state = 'creatingcontract';
+
+        self.contractjson = JSON.parse(e.target.import.body.innerText);
+
+        console.log('Adding to index contract on account ', self.account);
+
+        this.web3.eth.getGasPrice(function(err, result) {
+          var gasPrice = result.toNumber(10);
+
+          var MyContract = self.web3.eth.contract(self.contractjson.abi);
+
+          var myContractInstance = MyContract.at('0xC4946E241ab66cDa428581cF2624f8cc6E4a7B72');
+
+          // var options = {
+          //   from: self.account,
+          //   //value: 1 * 1e18,
+          //   gas: 100000,
+          //   gasPrice: gasPrice,
+          //   nonce: Math.floor(Math.random(999999)) + new Date().getTime(),
+          // };
+
+          result = myContractInstance.addclip.sendTransaction(contractaddress, self.title, self.description, self.tags, {
+              from: self.fixaddress(self.account),
+              gasPrice: gasPrice,
+              gasLimit: 3000000,
+              gas: 2000000,
+              data: self.contractjson.bytecode
+            },
+            function(err, result) {
+              if (err !== null) {
+                console.log(err);
+                console.log('ERROR: Transaction didnt go through. See console.');
+              } else {
+                console.log('Transaction Successful!');
+                console.log('Tx hash=', result);
+                // set vote status to TxHash received 
+                self.votestatus = 2;
+                self.transactionHash = result;
+              }
+            });
+        });
+
+      }, function(e) {
+        console.log('ERROR!', e);
+      });
+    },
     });
   })();
   </script>
+  
 </dom-module>

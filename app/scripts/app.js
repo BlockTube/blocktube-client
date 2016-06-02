@@ -65,6 +65,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.search = !app.search;
   };
 
-  app.host = 'http://109.123.70.141:8545';
+  app.gotoClip = function(e){
+    console.log(e.detail);
+    page('/clip/'+e.detail);
+  };
+
+  ///app.host = 'http://109.123.70.141:8545';
+  app.host = 'http://localhost:8545';
 
 })(document);
