@@ -76,61 +76,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <blockt-index web3="{{web3}}"></blockt-index>
 
-    <paper-drawer-panel id="paperDrawerPanel">
-      <!-- Drawer Scroll Header Panel -->
-      <paper-scroll-header-panel drawer fixed>
+    <paper-drawer-panel id="paperDrawerPanel" force-narrow>
 
-        <!-- Drawer Toolbar -->
-        <paper-toolbar id="drawerToolbar">
-          <span class="paper-font-title">Menu</span>
-        </paper-toolbar>
-
-        <!-- Drawer Content -->
+      <div drawer fixed>
         <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]" class="vertical layout">
           <a data-route="home" href="/" on-click="onDataRouteClick">
             <iron-icon icon="home"></iron-icon>
             <span>Home</span>
           </a>
-
           <a data-route="users" href="/users" on-click="onDataRouteClick">
             <iron-icon icon="info"></iron-icon>
             <span>Users</span>
           </a>
-
           <a data-route="contact" href="/contact" on-click="onDataRouteClick">
             <iron-icon icon="mail"></iron-icon>
             <span>Contact</span>
           </a>
-
            <a data-route="record" href="/record" on-click="onDataRouteClick">
             <iron-icon icon="mail"></iron-icon>
             <span>record</span>
           </a>
         </paper-menu>
-      </paper-scroll-header-panel>
+      </div>
 
-      <!-- Main Area -->
-      <paper-scroll-header-panel main fixed>
-
-        <!-- Main Toolbar -->
-        <paper-toolbar id="mainToolbar">
-          <iron-icon id="paperToggle" src="images/touch/blocktube.png" class="hero app-name" paper-drawer-toggle></iron-icon>
-
-           <div class="middle middle-container center horizontal layout">
-        <div class="app-name"><h4>Blocktu.be</h4></div>
-        </div>
-
-          <span class="flex"></span>
-
-          <!-- Toolbar icons -->
+      <div main fixed>
+      <div class="toolbar">
+        <!-- <div id="mainToolbar">
+        <iron-icon id="paperToggle" src="images/touch/blocktube.png" class="hero app-name" paper-drawer-toggle></iron-icon> -->
           <!-- <a href="/newplaylist"><paper-icon-button on-tap="add" icon="add"></paper-icon-button></a> -->
           <a href="/upload"><paper-icon-button icon="cloud-upload" on-tap="searchToggle"></paper-icon-button></a>
           <a href="/user"><img class="avatar" src="https://pbs.twimg.com/profile_images/516953365402505216/i76BUAyb.jpeg"></img></a>
-
-        <!-- Application name -->
-
-
-      </paper-toolbar>
+      </div>
 
       <!-- Main Content -->
       <div class="content">
@@ -195,7 +171,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </section>
         </iron-pages>
       </div>
-    </paper-scroll-header-panel>
+    </div>
   </paper-drawer-panel>
 
 </template>

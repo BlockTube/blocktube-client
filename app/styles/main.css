@@ -30,7 +30,7 @@ h3 {
 }
 
 h4 {
-  color: #101022;
+  color: white;
   font-weight: lighter;
   line-height: 1;
 }
@@ -74,3 +74,8 @@ a {
       }
 
    
+.toolbar {
+  width: 100%;
+  background-color: red;
+}
+
