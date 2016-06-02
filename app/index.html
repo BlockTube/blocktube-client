@@ -33,8 +33,9 @@
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
 
   <!-- build:css styles/main.css -->
-<!--   <link rel="stylesheet" href="styles/golden-goose.css">
- -->  <link rel="stylesheet" href="styles/main.css">
+  <!--   <link rel="stylesheet" href="styles/golden-goose.css">
+  -->
+  <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild-->
 
   <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
@@ -48,21 +49,23 @@
   <!-- For shared styles, shared-styles.html import in elements.html -->
   <style is="custom-style" include="shared-styles"></style>
 
-
 </head>
 
 <body unresolved class="fullbleed layout vertical">
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
 
-<!-- This is temporary  -->
+    <!-- This is temporary  -->
     <iron-localstorage name="blocktube-clips"
     value="{{localsclips}}"
     on-iron-localstorage-load-empty="initclips"
   ></iron-localstorage>
 
-
     <web3-wallet id="web3wallet" keystore="{{keystore}}" walletname="blocktube-demo" password="test" web3="{{web3}}" host="{{host}}"  balance="{{balance}}" account="{{account}}"></web3-wallet>
+
+    <iron-meta key="blocktube_contract" value="0xC4946E241ab66cDa428581cF2624f8cc6E4a7B72"></iron-meta>
+    <iron-meta key="ipfs_read" value="gateway.ipfs.io"></iron-meta>
+    <iron-meta key="ipfs_upload" value="/ip4/109.123.70.141/tcp/5001"></iron-meta>
 
     <blockt-index clips="{{clips}}" web3="{{web3}}"></blockt-index>
 
@@ -82,19 +85,19 @@
             <span>Home</span>
           </a>
 
-          <a data-route="users" href="/users" on-click="onDataRouteClick">
+         <a data-route="users" href="/upload" on-click="onDataRouteClick">
             <iron-icon icon="info"></iron-icon>
-            <span>Users</span>
+            <span>Upload a clip</span>
           </a>
-
+ <!-- 
           <a data-route="contact" href="/contact" on-click="onDataRouteClick">
             <iron-icon icon="mail"></iron-icon>
             <span>Contact</span>
-          </a>
+          </a> -->
 
-           <a data-route="record" href="/record" on-click="onDataRouteClick">
+          <a data-route="record" href="/record" on-click="onDataRouteClick">
             <iron-icon icon="mail"></iron-icon>
-            <span>record</span>
+            <span>Record a clip</span>
           </a>
         </paper-menu>
       </paper-scroll-header-panel>
@@ -106,37 +109,40 @@
         <paper-toolbar id="mainToolbar">
           <iron-icon id="paperToggle" src="images/touch/blocktube.png" class="hero app-name" paper-drawer-toggle></iron-icon>
 
-           <div class="middle middle-container center horizontal layout">
-        <div class="app-name"><h4>Blocktu.be</h4></div>
-        </div>
+          <div class="middle middle-container center horizontal layout">
+            <div class="app-name">
+              <h4>Blocktu.be</h4>
+            </div>
+          </div>
 
           <span class="flex"></span>
 
           <!-- Toolbar icons -->
-          <!-- <a href="/newplaylist"><paper-icon-button on-tap="add" icon="add"></paper-icon-button></a> -->
-          <a href="/upload"><paper-icon-button icon="cloud-upload" on-tap="searchToggle"></paper-icon-button></a>
-          <a href="/user"><img class="avatar" src="https://pbs.twimg.com/profile_images/516953365402505216/i76BUAyb.jpeg"></img></a>
+          <!-- <a href="/newplaylist">
+          <paper-icon-button on-tap="add" icon="add"></paper-icon-button>
+        </a>
+        -->
+        <a href="/upload">
+          <paper-icon-button icon="cloud-upload" on-tap="searchToggle"></paper-icon-button>
+        </a>
+        <a href="/user">
+          <img class="avatar" src="https://pbs.twimg.com/profile_images/516953365402505216/i76BUAyb.jpeg"></a>
 
-        <!-- Application name -->
-
-
-      </paper-toolbar>
+        <!-- Application name --> </paper-toolbar>
 
       <!-- Main Content -->
       <div class="content">
 
-        <template is="dom-if" if="{{search}}">
+       <!--  <template is="dom-if" if="{{search}}">
           <paper-input label="search"></paper-input>
-        </template>
+        </template> -->
 
         <iron-pages attr-for-selected="data-route" selected="{{route}}">
 
-
           <section data-route="home">
 
-
             <paper-material elevation="1">
-              <h1 class="paper-font-headline">sponnet Channel</h1>
+              <h1 class="paper-font-headline">Blocktube Channel - All clips</h1>
 
               <template is="dom-repeat" items="{{clips}}">
                 <stube-item on-item-tapped="gotoClip" listitem id="{{item.address}}" contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
@@ -158,6 +164,7 @@
 
           <section data-route="record">
             <paper-material elevation="1">
+<<<<<<< HEAD
             RECORD + AUDIO
               <!-- <stube-record web3="{{web3}}" account="{{account}}"></stube-record> -->
               <stube-record-audio web3="{{web3}}" account="{{account}}"></stube-record-audio>
@@ -189,6 +196,33 @@
       </div>
     </paper-scroll-header-panel>
   </paper-drawer-panel>
+=======
+              RECORD a clip (with AUDIO)
+            <stube-record-audio web3="{{web3}}" account="{{account}}"></stube-record-audio>
+          </paper-material>
+        </section>
+
+        <section data-route="clip">
+          <stube-clip ipfsobject="{{params.hash}}"></stube-clip>
+        </section>
+
+      
+<!--       <section data-route="newplaylist">
+        <paper-material elevation="1">
+          <stube-newplaylist account="{{account}}" web3="{{web3}}"></stube-newplaylist>
+        </paper-material>
+      </section>
+ --><!-- 
+      <section data-route="user">
+        <paper-material elevation="1">
+          <stube-user account="{{account}}" web3="{{web3}}" balance="{{balance}}"></stube-user>
+        </paper-material>
+      </section>
+ -->    </iron-pages>
+  </div>
+</paper-scroll-header-panel>
+</paper-drawer-panel>
+>>>>>>> origin/master
 
 </template>
 

@@ -59,14 +59,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="container vertical layout">
 
-     <!--  <h1>TEST<span>{{contract}}</span></h1> -->
+<iron-localstorage name="itemcache"
+    value="{{itemcache}}"
+    on-iron-localstorage-load="itemcacheloaded"
+    on-iron-localstorage-load-empty="itemcacheloadedempty"
+  ></iron-localstorage>
 
-      <stube-player videohash="{{videohash}}"></stube-player>
+      <!--  <h1>
+      TEST
+      <span>{{contract}}</span>
+    </h1>
+    -->
+    <stube-player videohash="{{videohash}}"></stube-player>
 
-      
-      <div id="entry">
-      <h3>{{title}}</h3>
-      <h4>{{description}}</h4>
+    <div id="entry">
+      <template is="dom-if" if="{{!title}}">
+        <h3>Loading</h3>
+      </template>
+      <template is="dom-if" if="{{title}}">
+
+        <h3>{{title}}</h3>
+        <h4>{{description}}</h4>
+        <h4>tags: {{tags}}</h4>
+
         <div>
           <span>{{duration}} s</span>
           -
@@ -81,17 +96,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <stube-likebtn account="{{account}}" web3="{{web3}}"></stube-likebtn>
           <p class="paper-font-body2 gris">{{likes}}</p>
         </div>
-      </div>
-   
 
-      <div class="paper-font-body1">{{ipfsobject}}</div>
-      <div class="paper-font-body1">{{descr}}</div>
-      <div></div>
+      </template>
     </div>
     </template>
-  </template>
 
-  <script>
+    <div class="paper-font-body1">{{ipfsobject}}</div>
+    <div class="paper-font-body1">{{descr}}</div>
+    <div></div>
+  </div>
+</template>
+>>>>>>> origin/master
+
+<script>
     (function() {
       'use strict';
       
@@ -113,12 +130,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           title: {
             type: String,
-            value: 'Loading ipfs',
+            //value: 'Loading ipfs',
             notify: true
           },
           description: {
             type: String,
-            value: 'Loading ipfs',
+            //value: 'Loading ipfs',
             notify: true
           },
           views: {
@@ -182,7 +199,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         _web3: function(){
-          if(this.contract){
+          this.loadcontract();
+        },
+
+        itemcacheloaded: function(){
+          this.loadcontract();
+        },
+
+        itemcacheloadedempty: function(){
+          this.itemcache = {};
+          this.loadcontract();
+        },
+
+        loadcontract: function(){
+          if (this.web3 && this.itemcache && this.contract){
             var myclipContract = this.web3.eth.contract(this.contractabi);
             var myclipContractInstance = myclipContract.at(this.contract);
             this.hash = myclipContractInstance.ipfsclipobject().toString();
@@ -191,44 +221,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         },
 
+        populate: function(ipfsData) {
+          var self=this;
+          self.title = ipfsData.name;
+          self.description = ipfsData.description;
+          self.videohash = ipfsData.video;
+          self.videourl = '';
+          self.tags = ipfsData.tags;
+        },
+
         attached: function() {
+          var ipfsData;
+          if (this.itemcache[this.hash]) {
+            console.log('cache HIT', this.hash);
+            ipfsData = this.itemcache[this.hash];
+            return this.populate(ipfsData);
+          } else {
+            console.log('cache MISS', this.hash);
 
-          //this.$.ajax.url = 'https://gateway.ipfs.io/ipfs/' + this.hash;
-          //console.log('requesting URL', this.$.ajax.url);
-          //this.$.ajax.url = 'http://localhost:8080/ipfs/'+this.hash;
-          //this.$.ajax.generateRequest();
-          var self = this;
-          var ipfs = window.ipfsAPI('gateway.ipfs.io',80);
+            var self = this;
+            var ipfs = window.ipfsAPI('gateway.ipfs.io', 80);
 
-          var buf = '';
-          //console.log('MIKE:this.hash);
-          ipfs.cat(this.hash, function(err, res) {
-            res
-              .on('error', function(err) {
-                throw(err);
-              })
-              .on('data', function(data) {
-                buf += data;
-              })
-              .on('end', function() {
-                var ipfsData = JSON.parse(buf);
-                self.title = ipfsData.name;
-                self.description = ipfsData.description;
-                self.videohash = ipfsData.video;
-                self.videourl = '';
-                console.log(ipfsData);
-
-//                 {
-// uploaddate: 1464633218,
-// video: "QmZsFqty9TtFq7EL3DWXxV1PiSDP6MKXTfYucjPuKD9YRZ",
-// filename: "Where Your Cat Goes May Blow Your Mind.mp4",
-// filesize: 44847560,
-// filemimetype: "video/mp4",
-// name: "Where your cat goes will blow your mind",
-// description: "Little docu about where cats go when you don't notice it."
-// }
-              });
-          });
+            var buf = '';
+            //console.log('MIKE:this.hash);
+            ipfs.cat(this.hash, function(err, res) {
+              res
+                .on('error', function(err) {
+                  throw (err);
+                })
+                .on('data', function(data) {
+                  buf += data;
+                })
+                .on('end', function() {
+                  var ipfsData = JSON.parse(buf);
+                  self.populate(ipfsData);
+                  self.set("itemcache."+self.hash,ipfsData);
+                });
+            });
+          }
 
 
         },
