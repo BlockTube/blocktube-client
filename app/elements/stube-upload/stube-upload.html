@@ -12,10 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../../bower_components/ipfs-upload/ipfs-upload.html">
-<!-- <link href="../../bower_components/videojs-thumbnails/videojs.thumbnails.css" rel="stylesheet">
-<script src="../../bower_components/videojs-thumbnails/node_modules/video.js/dist/video-js/video.js"></script>
 
-<script src='../../bower_components/videojs-thumbnails/videojs.thumbnails.js'></script> -->
 
 <dom-module id="stube-upload">
   <template>
@@ -36,10 +33,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
 
-    <!-- <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload> -->
-
     <paper-progress  value="50" max="100"></paper-progress>
-
+    <div id="videoland"></div>
+     <canvas id="thecanvas" crossOrigin="anonymous">
+        </canvas>
+        <div id="thumbnailContainer"></div>
     <paper-input label="Title" bind-value="{{title}}"></paper-input>
     <paper-input label="Description" bind-value="{{description}}"></paper-input>
     <paper-input label="Tags" bind-value="{{tags}}"></paper-input>
@@ -54,12 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <span>Your clip is being uploaded</span>
     </template>
     <template is="dom-if" if="{{_is(state,'uploadcomplete')}}">
-    <video id="video"
-       width="640"
-       height="264"
-       controls>
-  <source src='{{newvideo}}' />
-</video>
+    
       <span>Upload complete</span>
     </template>
     <template is="dom-if" if="{{_is(state,'creatingcontract')}}">
@@ -73,6 +66,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
   (function() {
     'use strict';
+
+      var thecanvas 
+    var video;
+    var thumbnailContainer;
 
     Polymer({
       is: 'stube-upload',
@@ -113,6 +110,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       ready: function(){
         this.state = 'start';
+        thecanvas = this.$.thecanvas;
+        thumbnailContainer = this.$.thumbnailContainer;
+        console.log(thecanvas);
       },
 
       // this will be removed later. Temp fix to get a list of uploads
@@ -129,7 +129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _uploadstart: function() {
         console.log('upload start');
-        this.state = 'uploading';
+        this.state = 'uploading'
 //        this.ipfsuploading = true;
       },
 
@@ -162,10 +162,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.metadata.tags = this.tags;
 
         //this.ipfsuploading = false;
+        
 
         this.newvideo = 'http://gateway.ipfs.io/ipfs/'+this.metadata.video;
-        this.createclip();
+        //this.createclip();
+        this.thumbnailviewer();
       },
+
+      thumbnailviewer: function(){
+//         <video id="videom"
+     
+//        controls>
+//   <source src='{{newvideo}}' />
+var self = this;
+// </video>
+        var elem = document.createElement("video");
+        var place = document.querySelector("#videoland");
+
+        elem.src = this.newvideo;
+        elem.controls = true;
+        elem.id = "newvideo";
+        elem.crossOrigin = "Anonymous";
+
+        place.appendChild(elem);
+
+        video = elem;
+        
+        elem.addEventListener('seeked', function() {
+
+      // now video has seeked and current frames will show
+      // at the time as we expect
+      self.generateThumbnail(i);
+      var i;
+      // when frame is captured, increase
+      i += 5;
+
+      // if we are not passed end, seek to next interval
+      if (i <= elem.duration) {
+          // this will trigger another seeked event
+          elem.currentTime = i;
+
+      } else {
+          // DONE!, next action
+      }
+
+    }, false);
+      },
+
+      generateThumbnail: function(i) {     
+    //generate thumbnail URL data
+
+     
+    var context = thecanvas.getContext('2d');
+    context.drawImage(video, 0, 0, 220, 150);
+
+thecanvas.crossOrigin = "Anonymous";
+    var dataURL = thecanvas.toDataURL();
+
+    //create img
+    var img = document.createElement('img');
+
+
+    img.setAttribute('crossOrigin', 'anonymous');
+    img.setAttribute('src', dataURL);
+
+    //append img in container div
+    //thumbnailContainer.appendChild(img);
+},
 
       upload: function() {
         this.readyforupload = true;
@@ -178,6 +241,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // All is ready
           this.metadata.name = this.title;
           this.metadata.description = this.description;
+          this.metadata.thumbnail = thecanvas.toDataURL();
 
           console.log('clip uploaded - now upload metadata to IPFS', this.metadata);
           this.$.ipfsupload.add(JSON.stringify(this.metadata), function(err, res) {
@@ -275,7 +339,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     _addtoIndexContract: function(contractaddress) {
       var self = this;
-    
+      debugger;
       this.contracturl = this.resolveUrl('../../contracts/blockTube.json');
       this.importHref(this.contracturl, function(e) {
 
@@ -292,15 +356,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           var myContractInstance = MyContract.at('0xC4946E241ab66cDa428581cF2624f8cc6E4a7B72');
 
-          // var options = {
-          //   from: self.account,
-          //   //value: 1 * 1e18,
-          //   gas: 100000,
-          //   gasPrice: gasPrice,
-          //   nonce: Math.floor(Math.random(999999)) + new Date().getTime(),
-          // };
+          var options = {
+            from: self.account,
+            //value: 1 * 1e18,
+            gas: 100000,
+            gasPrice: gasPrice,
+            nonce: Math.floor(Math.random(999999)) + new Date().getTime(),
+          };
 
-          result = myContractInstance.addclip.sendTransaction(contractaddress, self.title, self.description, self.tags, {
+          var result = myContractInstance.addclip.sendTransaction(contractaddress, self.title, self.description, self.tags, {
               from: self.fixaddress(self.account),
               gasPrice: gasPrice,
               gasLimit: 3000000,
@@ -308,11 +372,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               data: self.contractjson.bytecode
             },
             function(err, result) {
-              if (err !== null) {
+              if (err != null) {
                 console.log(err);
-                console.log('ERROR: Transaction didnt go through. See console.');
+                console.log("ERROR: Transaction didn't go through. See console.");
               } else {
-                console.log('Transaction Successful!');
+                console.log("Transaction Successful!");
                 console.log('Tx hash=', result);
                 // set vote status to TxHash received 
                 self.votestatus = 2;
