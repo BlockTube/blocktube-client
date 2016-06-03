@@ -54,10 +54,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   ></iron-localstorage>
 
     <template is="dom-if" if="{{listitem}}">
+      <div class="horizontal layout">
+      <img src="{{thumbnail}}" />
       <div class="vertical layout" on-tap="firelisttap">
         <h3>{{title}}</h3>
         <h4>{{description}}</h4>
       </div>
+    </template>
     </template>
     <!-- BAN jonge.... hier gade gij plezier aan beleven zenne -->
 
@@ -231,6 +234,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           self.title = ipfsData.name;
           self.description = ipfsData.description;
           self.videohash = ipfsData.video;
+          self.thumbnail = ipfsData.thumbnail;
           self.videourl = '';
           self.tags = ipfsData.tags;
         },
