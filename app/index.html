@@ -70,7 +70,7 @@
 
     <paper-drawer-panel id="paperDrawerPanel" force-narrow>
       <!-- Drawer Scroll Header Panel -->
-      <div class="drawer" drawer fixed>
+      <paper-scroll-header-panel drawer fixed>
 
         <!-- Drawer Toolbar -->
         <paper-toolbar id="drawerToolbar">
@@ -90,6 +90,7 @@
           </a>
           <!-- 
           <a data-route="contact" href="/contact" on-click="onDataRouteClick">
+
           <iron-icon icon="mail"></iron-icon>
           <span>Contact</span>
         </a>
@@ -99,18 +100,19 @@
           <span>Record a clip</span>
         </a> -->
       </paper-menu>
+    </paper-scroll-header-panel>
+  </paper-drawer-panel>
     </div>
 
     <!-- Main Area -->
     <div main fixed>
 
       <div  class="top">
+      
         <div class="btlogo">
-      <a href="javascript:Excess.RouteManager.transitionTo('/home')">
+        <a href="http://www.google.be">
           <img src="images/bt-logo3.svg">
         </a>
-          <!--    <p class="subtitle">The value of video</p>
-        -->
       </div>
       <a href="/user">
         <img class="avatar" src="http://a3.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTIwNjA4NjMzNjc0ODkyODEy.jpg"></a>
@@ -121,8 +123,12 @@
     </div>
 
 
+        <!-- Application name --> </paper-toolbar>
+
     <excess-route route="/:menu/(.*)?" menu="{{mainmenu}}"></excess-route>
     <excess-route route="/clip/:clipId" clip-id="{{clipId}}"></excess-route>
+    <excess-route route="/" redirect-to="/home"></excess-route>
+
 
     <!-- Main Content -->
     <div class="content">
@@ -152,6 +158,7 @@
         <stube-item contract="{{clipId}}" web3="{{web3}}" account="{{account}}"></stube-item>
 
           </paper-material>
+
         </template>
 
         <!--  <div data-route="clip">
@@ -195,6 +202,7 @@
   -->
 </div>
 </div>
+
 </paper-drawer-panel>
 
 </template>

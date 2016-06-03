@@ -20,8 +20,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
         width: 100%;
-        background-color: white;
         margin-bottom: 30px;
+        background-color: white;
       }
       img {
         width: 40%;
@@ -54,58 +54,58 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   ></iron-localstorage>
 
     <template is="dom-if" if="{{listitem}}">
-      <div class="horizontal layout">
-        <img src="{{thumbnail}}" />
-        <div class="vertical layout" on-tap="firelisttap">
-          <h3>{{title}}</h3>
-          <h4>{{description}}</h4>
-        </div>
+      <div class="horizontal layout" on-tap="firelisttap">
+      <img src="{{thumbnail}}" />
+      <div class="vertical layout flex" >
+        <h3>{{title}}</h3>
+        <h4>{{description}}</h4>
       </div>
     </template>
+   
     <!-- BAN jonge.... hier gade gij plezier aan beleven zenne -->
 
     <template is="dom-if" if="{{!listitem}}">
 
       <div class="container vertical layout">
 
-        <stube-player videohash="{{videohash}}"></stube-player>
+      <stube-player videohash="{{videohash}}"></stube-player>
 
-        <div id="entry">
-          <template is="dom-if" if="{{!title}}">
-            <h3>Loading</h3>
-          </template>
-          <template is="dom-if" if="{{title}}">
+      <div id="entry">
+        <template is="dom-if" if="{{!title}}">
+          <h3>Loading</h3>
+        </template>
+        <template is="dom-if" if="{{title}}">
 
-            <h3>{{title}}</h3>
-            <h4>{{description}}</h4>
-            <h4>tags: {{tags}}</h4>
+          <h3>{{title}}</h3>
+          <h4>{{description}}</h4>
+          <h4>tags: {{tags}}</h4>
 
-            <div>
-              <span>{{duration}} s</span>
-              -
-              <span>{{views}}</span>
-              views
+          <div>
+            <span>{{duration}} s</span>
+            -
+            <span>{{views}}</span>
+            views
     -
-              <span>{{comments}}</span>
-              comments
-            </div>
-            <div class="actionbuttons">
-              <paper-icon-button toggles icon="favorite" active="{{likebutton}}"></paper-icon-button>
-              <stube-likebtn account="{{account}}" web3="{{web3}}"></stube-likebtn>
-              <p class="paper-font-body2 gris">{{likes}}</p>
-            </div>
+            <span>{{comments}}</span>
+            comments
+          </div>
+          <div class="actionbuttons">
+            <paper-icon-button toggles icon="favorite" active="{{likebutton}}"></paper-icon-button>
+            <stube-likebtn account="{{account}}" web3="{{web3}}"></stube-likebtn>
+            <p class="paper-font-body2 gris">{{likes}}</p>
+          </div>
 
-          </template>
-        </div>
-      </template>
+        </template>
+      </div>
+    </template>
 
-      <div class="paper-font-body1">{{ipfsobject}}</div>
-      <div class="paper-font-body1">{{descr}}</div>
-      <div></div>
-    </div>
-  </template>
+    <div class="paper-font-body1">{{ipfsobject}}</div>
+    <div class="paper-font-body1">{{descr}}</div>
+    <div></div>
+  </div>
+</template>
 
-  <script>
+<script>
     (function() {
       'use strict';
       

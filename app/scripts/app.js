@@ -28,7 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // See https://github.com/Polymer/polymer/issues/1381
   window.addEventListener('WebComponentsReady', function() {
     // imports are loaded and elements have been registered
-    Excess.RouteManager.transitionTo('/home');
+    //Excess.RouteManager.transitionTo('/home');
 
 
     app.host = new Polymer.IronMetaQuery({
@@ -78,10 +78,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Excess.RouteManager.transitionTo('/clip/' + e.detail);
     //page('/clip/'+e.detail);
   };
-
-  //app.host = 'http://109.123.70.141:8545';
-  //app.host = 'http://localhost:8545';
-  //app.host = 'http://testnet.etherscan.io:8545';
 
 
 
