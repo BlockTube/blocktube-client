@@ -70,10 +70,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     page('/clip/'+e.detail);
   };
 
-  //app.host = 'http://109.123.70.141:8545';
+  app.host = 'http://109.123.70.141:8545';
   //app.host = 'http://localhost:8545';
   //app.host = 'http://testnet.etherscan.io:8545';
-  app.host = 'https://testrpc.metamask.io/';
+  //app.host = 'https://testrpc.metamask.io/';
   
   
 
