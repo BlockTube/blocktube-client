@@ -53,6 +53,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       readthecontract: function(){
       
+        console.log('Reading from contract ',this.contractaddr);
+
         var MyContract = this.web3.eth.contract(this.contractabi);
         var myContractInstance = MyContract.at(this.contractaddr);
         //var totalprop = 1;
