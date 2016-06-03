@@ -42,7 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="vertical layout">
     <video src="{{videourl}}" id="vp" on-tap="togglePlay"></video>
       <div class="controls">
-        
+        <paper-slider expand secondary-progress="{{progresspercentage}}" immediate-value="{{scrubtime}}" min="0" max="100" class="wide"></paper-slider>
         <div class="horizontal layout">
           <paper-icon-button 
             id="playpause" 
@@ -60,7 +60,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-icon-button icon="fullscreen"></paper-icon-button>
         </div>
 
-        <paper-progress value="{{progresspercentage}}" min="0" max="100" class="wide"></paper-progress>
+        
 
       </div>
     </div>
@@ -102,7 +102,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Number,
           value: 40,
           observer: '_volume'
+        },
+        scrubtime: {
+          type: Number,
+          observer: '_scrubtime',
+          value: 0
+        },
+        progresspercentage: {
+          type: Number,
+          value: 0
         }
+
       },
 
       attached: function() {
@@ -130,6 +140,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _playing: function(){
         
+      },
+
+      _scrubtime: function(){
+        if(this.init){
+          var newtime = vp.duration * this.scrubtime;
+          console.log(newtime/100);
+          vp.currentTime = newtime/100;
+        }
+        //vp.currentTime = newtime;
       },
 
       _progress: function(){
