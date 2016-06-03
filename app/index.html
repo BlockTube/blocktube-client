@@ -68,12 +68,6 @@
     <iron-meta key="ipfs_upload" value="/ip4/109.123.70.141/tcp/5001"></iron-meta>
     <iron-meta key="eth_node" value="http://109.123.70.141:8545"></iron-meta>
 
-    <excess-route
-    route="/:menu"
-    menu="{{appMenu}}"
-    
-  ></excess-route>
-
     <paper-drawer-panel id="paperDrawerPanel" force-narrow>
       <!-- Drawer Scroll Header Panel -->
       <div class="drawer" drawer fixed>
@@ -126,10 +120,14 @@
       <div class="login"></div>
     </div>
 
+
+    <excess-route route="/:menu/(.*)?" menu="{{mainmenu}}"></excess-route>
+    <excess-route route="/clip/:clipId" clip-id="{{clipId}}"></excess-route>
+
     <!-- Main Content -->
     <div class="content">
 
-      <lazy-pages selected="{{appMenu}}" attr-for-selected="route">
+      <lazy-pages selected="{{mainmenu}}" attr-for-selected="route">
 
         <template is="dom-if" route="home" >
           <paper-material elevation="1">
@@ -142,9 +140,17 @@
           </paper-material>
         </template>
 
-        <template is="dom-if" route="upload">
+        <template is="dom-if" route="upload" restamp>
           <paper-material elevation="1">
             <stube-upload web3="{{web3}}" account="{{account}}"></stube-upload>
+          </paper-material>
+        </template>
+
+ <template is="dom-if" route="clip" restamp>
+          <paper-material elevation="1">
+
+        <stube-item contract="{{clipId}}" web3="{{web3}}" account="{{account}}"></stube-item>
+
           </paper-material>
         </template>
 

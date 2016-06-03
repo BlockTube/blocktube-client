@@ -181,14 +181,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         ready: function(){
-
+          console.log('stube-item READY');
         },
 
         hitMe: function(){
           //this.fire('go', { msg: "/clip/hash1" });
           //location ="/clip/hash1";
 
-          page('/clip/'+this.hash);
+          Excess.RouteManager.transitionTo('/clip/'+this.hash);
+
+//          page('/clip/'+this.hash);
         },
 
         _likebutton: function(){
