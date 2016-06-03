@@ -61,7 +61,7 @@
     on-iron-localstorage-load-empty="initclips"
   ></iron-localstorage>
 
-    <web3-wallet id="web3wallet" keystore="{{keystore}}" walletname="blocktube-demo" password="test" web3="{{web3}}" host="{{host}}"  balance="{{balance}}" account="{{account}}"></web3-wallet>
+    <web3-wallet id="web3wallet" keystore="{{keystore}}" walletname="blocktube-demo" password="test" web3="{{web3}}" host="http://109.123.70.141:8545" host2="{{host}}"  balance="{{balance}}" account="{{account}}"></web3-wallet>
 
     <iron-meta key="blocktube_contract" value="0xC4946E241ab66cDa428581cF2624f8cc6E4a7B72"></iron-meta>
     <iron-meta key="ipfs_read" value="gateway.ipfs.io"></iron-meta>
@@ -127,7 +127,7 @@
 
     <excess-route route="/:menu/(.*)?" menu="{{mainmenu}}"></excess-route>
     <excess-route route="/clip/:clipId" clip-id="{{clipId}}"></excess-route>
-    <excess-route route="/" redirect-to="/home"></excess-route>
+    <!-- <excess-route route="/" redirect-to="/home"></excess-route> -->
 
 
     <!-- Main Content -->
