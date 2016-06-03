@@ -24,17 +24,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   // Listen for template bound event to know when bindings
   // have resolved and content has been stamped to the page
- 
+
   // See https://github.com/Polymer/polymer/issues/1381
   window.addEventListener('WebComponentsReady', function() {
     // imports are loaded and elements have been registered
+    Excess.RouteManager.transitionTo('/home');
+
+
+    app.host = new Polymer.IronMetaQuery({
+      key: 'eth_node'
+    }).value;
+
   });
 
   // Main area's paper-scroll-header-panel custom condensing transformation of
   // the appName in the middle-container and the bottom title in the bottom-container.
   // The appName is moved to top and shrunk on condensing. The bottom sub title
   // is shrunk to nothing on condensing.
- 
+
 
   // Close drawer after menu item is selected if drawerPanel is narrow
   app.onDataRouteClick = function() {
@@ -49,32 +56,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     //document.getElementById('mainContainer').scrollTop = 0;
   };
 
-  app.go = function(e){
-    page(e);
-  };
 
-  app.upload = function(){
-    page('/upload');
-  };
+  // app.go = function(e){
+  //   page(e);
+  // };
 
-  app.upload = function(){
-    page('/record');
-  };
+  // app.upload = function(){
+  //   page('/upload');
+  // };
 
-  app.searchToggle = function(){
-    app.search = !app.search;
-  };
+  // app.upload = function(){
+  //   page('/record');
+  // };
 
-  app.gotoClip = function(e){
+  // app.searchToggle = function(){
+  //   app.search = !app.search;
+  // };
+
+  app.gotoClip = function(e) {
     console.log(e.detail);
-    page('/clip/'+e.detail);
+    Excess.RouteManager.transitionTo('/clip/' + e.detail);
+    //page('/clip/'+e.detail);
   };
 
   //app.host = 'http://109.123.70.141:8545';
   //app.host = 'http://localhost:8545';
   //app.host = 'http://testnet.etherscan.io:8545';
-  app.host = 'https://testrpc.metamask.io/';
-  
-  
+
+
 
 })(document);

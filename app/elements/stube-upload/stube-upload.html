@@ -31,7 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <paper-material>
 
-    <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror" host="/ip4/109.123.70.141/tcp/5001"></ipfs-upload>
+    <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" on-upload-error="_uploaderror"></ipfs-upload>
 
     <paper-progress  value="50" max="100"></paper-progress>
     <div id="videoland"></div>
@@ -113,6 +113,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         thecanvas = this.$.thecanvas;
         thumbnailContainer = this.$.thumbnailContainer;
         console.log(thecanvas);
+
+
+        this.$.ipfsupload.host = new Polymer.IronMetaQuery({
+          key: 'ipfs_upload'
+        }).value;
+
+        
+
+
+
       },
 
       // this will be removed later. Temp fix to get a list of uploads

@@ -192,11 +192,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         _likebutton: function(){
-          console.log('Like? ', this.likebutton);
+          //console.log('Like? ', this.likebutton);
         },
 
         _contract: function(){
-          console.log('got contract: ', this.contract);
+          console.log('loading clip contract: ', this.contract);
           this.loadcontract();
         },
 
@@ -209,8 +209,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         itemcacheloaded: function(){
-          console.log('web3',this.web3===null);
-          console.log('contract',this.contract===null);
+          //console.log('web3',this.web3===null);
+          //console.log('contract',this.contract===null);
           this.loadcontract();
         },
 
@@ -241,6 +241,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         attached: function() {
 
+ this.ipfsapihost = new Polymer.IronMetaQuery({
+          key: 'ipfs_read'
+        }).value;
+
           this.$.lscache.name = 'itemcache-' + this.hash;
 
           var ipfsData;
@@ -249,15 +253,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
 
           if (this.itemcache[this.hash]) {
-            console.log('cache HIT', this.hash);
+            //console.log('cache HIT', this.hash);
             ipfsData = this.itemcache[this.hash];
             return this.populate(ipfsData);
           } else {
 
-            console.log('cache MISS', this.hash);
+            //console.log('cache MISS', this.hash);
 
             var self = this;
-            var ipfs = window.ipfsAPI('gateway.ipfs.io', 80);
+            var ipfs = window.ipfsAPI(this.ipfsapihost, 80);
 
             var buf = '';
             //console.log('MIKE:this.hash);

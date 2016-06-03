@@ -66,8 +66,13 @@
     <iron-meta key="blocktube_contract" value="0xC4946E241ab66cDa428581cF2624f8cc6E4a7B72"></iron-meta>
     <iron-meta key="ipfs_read" value="gateway.ipfs.io"></iron-meta>
     <iron-meta key="ipfs_upload" value="/ip4/109.123.70.141/tcp/5001"></iron-meta>
+    <iron-meta key="eth_node" value="http://109.123.70.141:8545"></iron-meta>
 
-    <blockt-index clips="{{clips}}" web3="{{web3}}"></blockt-index>
+    <excess-route
+    route="/:menu"
+    menu="{{appMenu}}"
+    
+  ></excess-route>
 
     <paper-drawer-panel id="paperDrawerPanel" force-narrow>
       <!-- Drawer Scroll Header Panel -->
@@ -80,109 +85,111 @@
 
         <!-- Drawer Content -->
         <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]" class="vertical layout">
-          <a data-route="home" href="/" on-click="onDataRouteClick">
+          <a data-route="home" href="javascript:Excess.RouteManager.transitionTo('/home')" on-click="onDataRouteClick">
             <iron-icon icon="home"></iron-icon>
             <span>Home</span>
           </a>
 
-         <a data-route="users" href="/upload" on-click="onDataRouteClick">
+          <a data-route="users" href="javascript:Excess.RouteManager.transitionTo('/upload')" on-click="onDataRouteClick">
             <iron-icon icon="info"></iron-icon>
             <span>Upload a clip</span>
           </a>
- <!-- 
+          <!-- 
           <a data-route="contact" href="/contact" on-click="onDataRouteClick">
-            <iron-icon icon="mail"></iron-icon>
-            <span>Contact</span>
-          </a> -->
+          <iron-icon icon="mail"></iron-icon>
+          <span>Contact</span>
+        </a>
+        -->
+      <!--   <a data-route="record" href="/record" on-click="onDataRouteClick">
+          <iron-icon icon="mail"></iron-icon>
+          <span>Record a clip</span>
+        </a> -->
+      </paper-menu>
+    </div>
 
-          <a data-route="record" href="/record" on-click="onDataRouteClick">
-            <iron-icon icon="mail"></iron-icon>
-            <span>Record a clip</span>
-          </a>
-        </paper-menu>
-      </div>
-
-
-      <!-- Main Area -->
-      <div main fixed>
+    <!-- Main Area -->
+    <div main fixed>
 
       <div  class="top">
         <div class="btlogo">
+      <a href="javascript:Excess.RouteManager.transitionTo('/home')">
           <img src="images/bt-logo3.svg">
-          <!--    <p class="subtitle">The value of video</p> -->
-        </div>
-        <a href="/user">
-          <img class="avatar" src="http://a3.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTIwNjA4NjMzNjc0ODkyODEy.jpg">
         </a>
-        <a href="/upload">
-          <paper-icon-button icon="cloud-upload" on-tap="searchToggle"></paper-icon-button>
-        </a>
-        <div class="login"></div>
+          <!--    <p class="subtitle">The value of video</p>
+        -->
       </div>
+      <a href="/user">
+        <img class="avatar" src="http://a3.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTIwNjA4NjMzNjc0ODkyODEy.jpg"></a>
+      <a href="javascript:Excess.RouteManager.transitionTo('/upload')">
+        <paper-icon-button icon="cloud-upload"></paper-icon-button>
+      </a>
+      <div class="login"></div>
+    </div>
 
+    <!-- Main Content -->
+    <div class="content">
 
-        
-      <!-- Main Content -->
-      <div class="content">
+      <lazy-pages selected="{{appMenu}}" attr-for-selected="route">
 
-       <!--  <template is="dom-if" if="{{search}}">
-          <paper-input label="search"></paper-input>
-        </template> -->
+        <template is="dom-if" route="home" >
+          <paper-material elevation="1">
+            <blockt-index clips="{{clips}}" web3="{{web3}}"></blockt-index>
 
-        <iron-pages attr-for-selected="data-route" selected="{{route}}">
-
-          <section data-route="home">
-
-            <paper-material elevation="1">
-              <h1 class="paper-font-headline">Blocktube Channel - All clips</h1>
-
-              <template is="dom-repeat" items="{{clips}}">
-                <stube-item on-item-tapped="gotoClip" listitem id="{{item.address}}" contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
-              </template>
-
-            </paper-material>
-
-          </section>
-
-          <section data-route="clip">
-            <stube-item contract="{{params.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
-          </section>
-
-          <section data-route="upload">
-            <paper-material elevation="1">
-              <stube-upload web3="{{web3}}" account="{{account}}"></stube-upload>
-            </paper-material>
-          </section>
-
-          <section data-route="record">
-            <paper-material elevation="1">
-
-              RECORD a clip (with AUDIO)
-            <stube-record-audio web3="{{web3}}" account="{{account}}"></stube-record-audio>
+            <h1 class="paper-font-headline">Blocktube Channel - All clips</h1>
+            <template is="dom-repeat" items="{{clips}}">
+              <stube-item on-item-tapped="gotoClip" listitem id="{{item.address}}" contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
+            </template>
           </paper-material>
-        </section>
+        </template>
 
-        <section data-route="clip">
-          <stube-clip ipfsobject="{{params.hash}}"></stube-clip>
-        </section>
+        <template is="dom-if" route="upload">
+          <paper-material elevation="1">
+            <stube-upload web3="{{web3}}" account="{{account}}"></stube-upload>
+          </paper-material>
+        </template>
 
-      
-<!--       <section data-route="newplaylist">
-        <paper-material elevation="1">
-          <stube-newplaylist account="{{account}}" web3="{{web3}}"></stube-newplaylist>
-        </paper-material>
-      </section>
- --><!-- 
-      <section data-route="user">
-        <paper-material elevation="1">
-          <stube-user account="{{account}}" web3="{{web3}}" balance="{{balance}}"></stube-user>
-        </paper-material>
-      </section>
- -->    </iron-pages>
-  </div>
+        <!--  <div data-route="clip">
+        <stube-item contract="{{params.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
+      </div>
+      -->
+    </lazy-pages>
+
+    <!--    <iron-pages attr-for-selected="data-route" selected="{{appMenu}}">
+    <section data-route="home">
+      <paper-material elevation="1">
+        <h1 class="paper-font-headline">Blocktube Channel - All clips</h1>
+        <template is="dom-repeat" items="{{clips}}">
+          <stube-item on-item-tapped="gotoClip" listitem id="{{item.address}}" contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
+        </template>
+      </paper-material>
+    </section>
+
+    <section data-route="clip">
+      <stube-item contract="{{params.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
+    </section>
+
+    <section data-route="upload">
+      <paper-material elevation="1">
+        <stube-upload web3="{{web3}}" account="{{account}}"></stube-upload>
+      </paper-material>
+    </section>
+
+    <section data-route="record">
+      <paper-material elevation="1">
+        RECORD a clip (with AUDIO)
+        <stube-record-audio web3="{{web3}}" account="{{account}}"></stube-record-audio>
+      </paper-material>
+    </section>
+
+    <section data-route="clip">
+      <stube-clip ipfsobject="{{params.hash}}"></stube-clip>
+    </section>
+
+  </iron-pages>
+  -->
+</div>
 </div>
 </paper-drawer-panel>
-
 
 </template>
 

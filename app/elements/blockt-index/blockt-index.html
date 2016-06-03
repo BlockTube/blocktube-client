@@ -36,6 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         contractaddr: {
           type: String,
           //value: '0xC4946E241ab66cDa428581cF2624f8cc6E4a7B72'
+          observer: 'readthecontract'
         },
         contractabi: {
           type: Object,
@@ -53,6 +54,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       readthecontract: function(){
       
+        if (this.web3 && this.contractaddr){
+
         console.log('Reading from contract ',this.contractaddr);
 
         var MyContract = this.web3.eth.contract(this.contractabi);
@@ -72,7 +75,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.clips = [];
 
         for (var i = totalclips - 1; i >= 0; i--) {
-          console.log(myContractInstance.clips(i));
+          //console.log(myContractInstance.clips(i));
           var clipobject = myContractInstance.clips(i);
           var clipitem = {};
           clipitem.address = clipobject[0];
@@ -82,7 +85,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.push('clips', clipitem);
         }
 
-        console.log('cliplist: ',this.clips);
+        //console.log('cliplist: ',this.clips);
         //   var _description = null;
         //   //Things[i];
            
@@ -116,6 +119,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // //console.log(this.balance);
         // this.getLocalcoinBalance();
       }
+    }
     });
   })();
   </script>
