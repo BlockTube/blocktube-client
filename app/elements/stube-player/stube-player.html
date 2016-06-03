@@ -51,8 +51,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             disabled>
            </paper-icon-button>
           <paper-icon-button icon="av:skip-next"></paper-icon-button>
-          <paper-icon-button icon="av:volume-down"></paper-icon-button>
-          <paper-slider min="10" max="200" immediate-value="{{volume}}" class="soundslider"></paper-slider>
+          <paper-icon-button on-tap="toggleMute" icon="{{volumeicon}}"></paper-icon-button>
+          <paper-slider min="10" max="200" value="{{volume}}" immediate-value="{{volume}}" class="soundslider"></paper-slider>
           <div>time / time</div>
           <div class="flex"></div>
           <paper-icon-button icon="av:closed-caption" disabled></paper-icon-button>
@@ -119,6 +119,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 //        console.log('stube hash=',this.videohash);
           vp = this.$.vp;
           this.init = true;
+          this.mute = false;
       },
 
       enableplay: function(){
@@ -162,7 +163,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.log(this.volume);
         if(this.init){
           vp.volume = this.volume/200;
+          this.prevvolume = this.volume;
           console.log(vp.volume);
+          this.volumeicon = 'av:volume-down';
+        }
+      },
+
+      toggleMute: function(){
+        if(this.mute){
+          this.prevvolume = this.volume;
+          this.volume = 0;
+          !this.mute;
+        } else {
+          this.volume = this.prevvolume;
+          this.mute = true;
         }
       },
 
