@@ -305,7 +305,7 @@ gulp.task('deploy', ['default'], function() {
 
   bb.deploy({
     access_token: process.env.BB_ACCESSTOKEN,
-    site_id: "sponnietube.bitballoon.com",
+    site_id: process.env.BB_URL,
     dir: "dist"
   }, function(err, deploy) {
     if (err) {
