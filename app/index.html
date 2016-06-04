@@ -67,148 +67,149 @@
     <iron-meta key="ipfs_read" value="gateway.ipfs.io"></iron-meta>
     <iron-meta key="ipfs_upload" value="/ip4/109.123.70.141/tcp/5001"></iron-meta>
     <iron-meta key="eth_node" value="http://109.123.70.141:8545"></iron-meta>
-   <!--  <iron-meta key="eth_node" value="http://109.123.70.141:8545"></iron-meta> -->
+    <!--  <iron-meta key="eth_node" value="http://109.123.70.141:8545"></iron-meta>
+  -->
+  <paper-drawer-panel id="paperDrawerPanel" force-narrow>
+    <!-- Drawer Scroll Header Panel -->
+    <paper-scroll-header-panel drawer fixed>
 
-    <paper-drawer-panel id="paperDrawerPanel" force-narrow>
-      <!-- Drawer Scroll Header Panel -->
-      <paper-scroll-header-panel drawer fixed>
+      <!-- Drawer Toolbar -->
+      <paper-toolbar id="drawerToolbar">
+        <span class="paper-font-title">Menu</span>
+      </paper-toolbar>
 
-        <!-- Drawer Toolbar -->
-        <paper-toolbar id="drawerToolbar">
-          <span class="paper-font-title">Menu</span>
-        </paper-toolbar>
+      <!-- Drawer Content -->
+      <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]" class="vertical layout">
+        <a data-route="home" href="javascript:Excess.RouteManager.transitionTo('/home')" on-click="onDataRouteClick">
+          <iron-icon icon="home"></iron-icon>
+          <span>Home</span>
+        </a>
 
-        <!-- Drawer Content -->
-        <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]" class="vertical layout">
-          <a data-route="home" href="javascript:Excess.RouteManager.transitionTo('/home')" on-click="onDataRouteClick">
-            <iron-icon icon="home"></iron-icon>
-            <span>Home</span>
-          </a>
-
-          <a data-route="users" href="javascript:Excess.RouteManager.transitionTo('/upload')" on-click="onDataRouteClick">
-            <iron-icon icon="info"></iron-icon>
-            <span>Upload a clip</span>
-          </a>
-          <!-- 
+        <a data-route="users" href="javascript:Excess.RouteManager.transitionTo('/upload')" on-click="onDataRouteClick">
+          <iron-icon icon="info"></iron-icon>
+          <span>Upload a clip</span>
+        </a>
+        <!-- 
           <a data-route="contact" href="/contact" on-click="onDataRouteClick">
 
-          <iron-icon icon="mail"></iron-icon>
-          <span>Contact</span>
-        </a>
-        -->
-      <!--   <a data-route="record" href="/record" on-click="onDataRouteClick">
-          <iron-icon icon="mail"></iron-icon>
-          <span>Record a clip</span>
-        </a> -->
-      </paper-menu>
-    </paper-scroll-header-panel>
-  </paper-drawer-panel>
-    </div>
-
-    <!-- Main Area -->
-    <div main fixed>
-
-      <div  class="top">
-      
-        <div class="btlogo">
-        <a href="http://www.google.be">
-          <img src="images/bt-logo3.svg">
-        </a>
-      </div>
-      <a href="/user">
-        <img class="avatar" src="http://a3.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTIwNjA4NjMzNjc0ODkyODEy.jpg"></a>
-      <a href="javascript:Excess.RouteManager.transitionTo('/upload')">
-        <paper-icon-button icon="cloud-upload"></paper-icon-button>
+        <iron-icon icon="mail"></iron-icon>
+        <span>Contact</span>
       </a>
-      <div class="login"></div>
-    </div>
+      -->
+      <!--   <a data-route="record" href="/record" on-click="onDataRouteClick">
+      <iron-icon icon="mail"></iron-icon>
+      <span>Record a clip</span>
+    </a>
+    -->
+  </paper-menu>
+</paper-scroll-header-panel>
+</paper-drawer-panel>
+</div>
 
+<!-- Main Area -->
+<div main fixed>
 
-        <!-- Application name --> </paper-toolbar>
+<div  class="top">
+
+<div class="btlogo">
+  <a href="http://www.google.be">
+    <img src="images/bt-logo3.svg"></a>
+</div>
+<a href="/user">
+  <img class="avatar" src="http://a3.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTIwNjA4NjMzNjc0ODkyODEy.jpg"></a>
+<a href="javascript:Excess.RouteManager.transitionTo('/upload')">
+  <paper-icon-button icon="cloud-upload"></paper-icon-button>
+</a>
+<div class="login"></div>
+</div>
+
+<!-- Application name -->
 <excess-router-config
   path-style="hash"
   hash-prefix="#!"
 ></excess-router-config>
 
-    <excess-route route="/:menu/(.*)?" menu="{{mainmenu}}"></excess-route>
-    <excess-route route="/clip/:clipId" clip-id="{{clipId}}"></excess-route>
-    <!-- <excess-route route="/" redirect-to="/home"></excess-route> -->
+<excess-route route="/:menu/(.*)?" menu="{{mainmenu}}"></excess-route>
+<excess-route route="/clip/:clipId" clip-id="{{clipId}}"></excess-route>
+<!-- <excess-route route="/" redirect-to="/home"></excess-route>
+-->
+<!-- Main Content -->
+<div class="content">
 
+<lazy-pages selected="{{mainmenu}}" attr-for-selected="route">
 
-    <!-- Main Content -->
-    <div class="content">
+<template is="dom-if" route="home" >
+  <paper-material elevation="1">
+    <blockt-index clips="{{clips}}" web3="{{web3}}"></blockt-index>
 
-      <lazy-pages selected="{{mainmenu}}" attr-for-selected="route">
+    <h1 class="paper-font-headline">Blocktube Channel - All clips</h1>
+    <template is="dom-repeat" items="{{clips}}">
+      <stube-item on-item-tapped="gotoClip" listitem id="{{item.address}}" contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
+    </template>
+  </paper-material>
+</template>
 
-        <template is="dom-if" route="home" >
-          <paper-material elevation="1">
-            <blockt-index clips="{{clips}}" web3="{{web3}}"></blockt-index>
+<template is="dom-if" route="upload" restamp>
+  <paper-material elevation="1">
+    <stube-upload web3="{{web3}}" account="{{account}}"></stube-upload>
+  </paper-material>
+</template>
 
-            <h1 class="paper-font-headline">Blocktube Channel - All clips</h1>
-            <template is="dom-repeat" items="{{clips}}">
-              <stube-item on-item-tapped="gotoClip" listitem id="{{item.address}}" contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
-            </template>
-          </paper-material>
-        </template>
+<template is="dom-if" route="clip" restamp>
+  <paper-material elevation="1">
 
-        <template is="dom-if" route="upload" restamp>
-          <paper-material elevation="1">
-            <stube-upload web3="{{web3}}" account="{{account}}"></stube-upload>
-          </paper-material>
-        </template>
+    <stube-item contract="{{clipId}}" web3="{{web3}}" account="{{account}}"></stube-item>
 
- <template is="dom-if" route="clip" restamp>
-          <paper-material elevation="1">
+  </paper-material>
 
-        <stube-item contract="{{clipId}}" web3="{{web3}}" account="{{account}}"></stube-item>
+</template>
 
-          </paper-material>
+<!--  <div data-route="clip">
+<stube-item contract="{{params.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
+</div>
+-->
+</lazy-pages>
 
-        </template>
+<!--    <iron-pages attr-for-selected="data-route" selected="{{appMenu}}">
+<section data-route="home">
+<paper-material elevation="1">
+<h1 class="paper-font-headline">Blocktube Channel - All clips</h1>
+<template is="dom-repeat" items="{{clips}}">
+  <stube-item on-item-tapped="gotoClip" listitem id="{{item.address}}" contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
+</template>
+</paper-material>
+</section>
 
-        <!--  <div data-route="clip">
-        <stube-item contract="{{params.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
-      </div>
-      -->
-    </lazy-pages>
+<section data-route="clip">
+<stube-item contract="{{params.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
+</section>
 
-    <!--    <iron-pages attr-for-selected="data-route" selected="{{appMenu}}">
-    <section data-route="home">
-      <paper-material elevation="1">
-        <h1 class="paper-font-headline">Blocktube Channel - All clips</h1>
-        <template is="dom-repeat" items="{{clips}}">
-          <stube-item on-item-tapped="gotoClip" listitem id="{{item.address}}" contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
-        </template>
-      </paper-material>
-    </section>
+<section data-route="upload">
+<paper-material elevation="1">
+<stube-upload web3="{{web3}}" account="{{account}}"></stube-upload>
+</paper-material>
+</section>
 
-    <section data-route="clip">
-      <stube-item contract="{{params.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
-    </section>
+<section data-route="record">
+<paper-material elevation="1">
+RECORD a clip (with AUDIO)
+<stube-record-audio web3="{{web3}}" account="{{account}}"></stube-record-audio>
+</paper-material>
+</section>
 
-    <section data-route="upload">
-      <paper-material elevation="1">
-        <stube-upload web3="{{web3}}" account="{{account}}"></stube-upload>
-      </paper-material>
-    </section>
+<section data-route="clip">
+<stube-clip ipfsobject="{{params.hash}}"></stube-clip>
+</section>
 
-    <section data-route="record">
-      <paper-material elevation="1">
-        RECORD a clip (with AUDIO)
-        <stube-record-audio web3="{{web3}}" account="{{account}}"></stube-record-audio>
-      </paper-material>
-    </section>
-
-    <section data-route="clip">
-      <stube-clip ipfsobject="{{params.hash}}"></stube-clip>
-    </section>
-
-  </iron-pages>
-  -->
+</iron-pages>
+-->
 </div>
 </div>
 
-</paper-drawer-panel>
+<paper-material elevation="2">
+
+<a href="http://faucet.ma.cx:3000/donate/{{account}}">{{account}} balance {{balance}} WEI. Click to fill this account on faucet</a>
+</paper-material>
 
 </template>
 

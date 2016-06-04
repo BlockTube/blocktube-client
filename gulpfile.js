@@ -108,6 +108,10 @@ gulp.task('copy', function() {
     'bower_components/**/*'
   ]).pipe(gulp.dest('dist/bower_components'));
 
+  var sol = gulp.src([
+    'app/contracts/*.json'
+  ]).pipe(gulp.dest('dist/contracts'));
+
   var vendor = gulp.src([
     'app/vendor/*'
   ]).pipe(gulp.dest('dist/vendor'));
@@ -125,7 +129,7 @@ gulp.task('copy', function() {
     .pipe($.rename('elements.vulcanized.html'))
     .pipe(gulp.dest('dist/elements'));
 
-  return merge(app, vendor, bower, elements, vulcanized, swBootstrap, swToolbox)
+  return merge(app, vendor,sol, bower, elements, vulcanized, swBootstrap, swToolbox)
     .pipe($.size({
       title: 'copy'
     }));
