@@ -115,8 +115,8 @@
           <img src="images/bt-logo3.svg">
         </a>
       </div>
-      <a href="/user">
-        <img class="avatar" src="http://a3.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTIwNjA4NjMzNjc0ODkyODEy.jpg"></a>
+      <a href="javascript:Excess.RouteManager.transitionTo('/user')">
+        <img class="avatar" src="{{useravatar}}"></a>
       <a href="javascript:Excess.RouteManager.transitionTo('/upload')">
         <paper-icon-button icon="cloud-upload"></paper-icon-button>
       </a>
@@ -150,6 +150,12 @@
         <template is="dom-if" route="upload" restamp>
           <paper-material elevation="1">
             <stube-upload web3="{{web3}}" account="{{account}}"></stube-upload>
+          </paper-material>
+        </template>
+
+        <template is="dom-if" route="user" restamp>
+          <paper-material elevation="1">
+            <stube-user web3="{{web3}}" account="{{account}}"></stube-user>
           </paper-material>
         </template>
 

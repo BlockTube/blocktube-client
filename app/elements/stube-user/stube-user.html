@@ -9,18 +9,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
 
 <dom-module id="stube-user">
   <template>
     <style>
       :host {
         display: block;
+        background-color: white;
       }
     </style>
     <h1>Hi user!</h1>
     <p>{{account}}</p>
     <p>Eth: <span>{{balance}}</span></p>
+    <paper-button raised on-tap="getEth">Get more ether</paper-button>
     <p>BTCoin: <span>{{BTCoinBalance}}</span></p>
+    <iron-ajax
+      id="ajax"
+       handle-as="json"
+       on-response="handleResponse"></iron-ajax>
   </template>
   <script>
   (function() {
@@ -57,6 +66,15 @@ console.log(accounts); // ["0x407d73d8a49eeb85d32cf465507dd71d507100c1"]
       //console.log(this.account, ' current localcoin balance: ', coinbalance);
       this.BTCoinBalance = coinbalance/100;
     },
+
+    getEth: function(){
+      this.$.ajax.url = 'http://faucet.ma.cx:3000/donate/'+this.account+'/';
+      this.$.ajax.generateRequest();
+    },
+
+    handleResponse: function(e){
+      console.log(e);
+    }
     });
   })();
   </script>
