@@ -60,8 +60,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-icon-button icon="fullscreen"></paper-icon-button>
         </div>
 
-        
-
       </div>
     </div>
   </template>
@@ -165,7 +163,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           vp.volume = this.volume/200;
           this.prevvolume = this.volume;
           console.log(vp.volume);
+          
           this.volumeicon = 'av:volume-down';
+        
         }
       },
 
@@ -174,6 +174,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.prevvolume = this.volume;
           this.volume = 0;
           this.mute = false;
+          this.volumeicon = "av:volume-off";
         } else {
           this.volume = this.prevvolume;
           this.mute = true;
