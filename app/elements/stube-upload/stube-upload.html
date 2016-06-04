@@ -67,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   (function() {
     'use strict';
 
-      var thecanvas 
+      var thecanvas ;
     var video;
     var thumbnailContainer;
 
@@ -143,7 +143,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _uploadstart: function() {
         console.log('upload start');
-        this.state = 'uploading'
+        this.state = 'uploading';
 //        this.ipfsuploading = true;
       },
 
@@ -190,24 +190,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 //   <source src='{{newvideo}}' />
 var self = this;
 // </video>
-        var elem = document.createElement("video");
-        var place = document.querySelector("#videoland");
+        var elem = document.createElement('video');
+        var place = document.querySelector('#videoland');
 
         elem.src = this.newvideo;
         elem.controls = true;
-        elem.id = "newvideo";
-        elem.crossOrigin = "Anonymous";
+        elem.id = 'newvideo';
+        elem.crossOrigin = 'Anonymous';
 
         place.appendChild(elem);
 
         video = elem;
         
+var i=0;
         elem.addEventListener('seeked', function() {
-
       // now video has seeked and current frames will show
       // at the time as we expect
       self.generateThumbnail(i);
-      var i;
+      //var i;
       // when frame is captured, increase
       i += 5;
 
@@ -223,14 +223,14 @@ var self = this;
     }, false);
       },
 
-      generateThumbnail: function(i) {     
+      generateThumbnail: function() {     
     //generate thumbnail URL data
 
      
     var context = thecanvas.getContext('2d');
     context.drawImage(video, 0, 0, 220, 150);
 
-thecanvas.crossOrigin = "Anonymous";
+thecanvas.crossOrigin = 'Anonymous';
     var dataURL = thecanvas.toDataURL();
 
     //create img
@@ -370,15 +370,15 @@ thecanvas.crossOrigin = "Anonymous";
 
           var myContractInstance = MyContract.at('0xC4946E241ab66cDa428581cF2624f8cc6E4a7B72');
 
-          var options = {
-            from: self.account,
-            //value: 1 * 1e18,
-            gas: 100000,
-            gasPrice: gasPrice,
-            nonce: Math.floor(Math.random(999999)) + new Date().getTime(),
-          };
+          // var options = {
+          //   from: self.account,
+          //   //value: 1 * 1e18,
+          //   gas: 100000,
+          //   gasPrice: gasPrice,
+          //   nonce: Math.floor(Math.random(999999)) + new Date().getTime(),
+          // };
 
-          var result = myContractInstance.addclip.sendTransaction(contractaddress, self.title, self.description, self.tags, {
+          result = myContractInstance.addclip.sendTransaction(contractaddress, self.title, self.description, self.tags, {
               from: self.fixaddress(self.account),
               gasPrice: gasPrice,
               gasLimit: 3000000,
@@ -386,11 +386,11 @@ thecanvas.crossOrigin = "Anonymous";
               data: self.contractjson.bytecode
             },
             function(err, result) {
-              if (err != null) {
+              if (err !== null) {
                 console.log(err);
-                console.log("ERROR: Transaction didn't go through. See console.");
+                console.log('ERROR: Transaction didnt go through. See console.');
               } else {
-                console.log("Transaction Successful!");
+                console.log('Transaction Successful!');
                 console.log('Tx hash=', result);
                 // set vote status to TxHash received 
                 self.votestatus = 2;

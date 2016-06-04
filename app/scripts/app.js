@@ -28,7 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // See https://github.com/Polymer/polymer/issues/1381
   window.addEventListener('WebComponentsReady', function() {
     // imports are loaded and elements have been registered
-    if (window.location.hash === ""){
+    if (window.location.hash === ''){
       Excess.RouteManager.transitionTo('/home');
     }
 
