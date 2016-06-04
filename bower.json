@@ -13,7 +13,8 @@
     "excess-router": "^0.9.14",
     "iron-meta": "^1.1.1",
     "locals-progress": "https://github.com/locals-world/locals-progress.git",
-    "lazy-pages": "^0.8.5"
+    "lazy-pages": "^0.8.5",
+    "VideoSub": "https://github.com/thomassturm/VideoSub.git"
   },
   "devDependencies": {}
 }

@@ -12,7 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
-
+<script src="../../bower_components/VideoSub/videosub.js"></script>
 
 <dom-module id="stube-player">
   <template>
@@ -40,7 +40,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
     <div class="vertical layout">
-    <video src="{{videourl}}" id="vp" on-tap="togglePlay"></video>
+    <video id="vp" on-tap="togglePlay">
+      <source src="{{videourl}}" />
+      <track src="/images/scrubs.srt" kind="subtitle" srclang="en-US" label="English" />
+    </video>
       <div class="controls">
         <paper-slider expand secondary-progress="{{progresspercentage}}" immediate-value="{{scrubtime}}" min="0" max="100" class="wide"></paper-slider>
         <div class="horizontal layout">

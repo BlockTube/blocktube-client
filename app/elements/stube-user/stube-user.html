@@ -47,20 +47,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String
         },
         balance: {
+        },
+        coincontract: {
+          observer: '_coincontract'
+        },
+        coincontractabi: {
+          type: Object,
+          value: [ { "constant": true, "inputs": [], "name": "name", "outputs": [ { "name": "", "type": "string", "value": "btcoin" } ], "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [ { "name": "", "type": "uint256", "value": "100000000" } ], "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [ { "name": "", "type": "uint8", "value": "2" } ], "type": "function" }, { "constant": true, "inputs": [], "name": "numClips", "outputs": [ { "name": "", "type": "uint256", "value": "12" } ], "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "balanceOf", "outputs": [ { "name": "", "type": "uint256", "value": "0" } ], "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [ { "name": "", "type": "string", "value": "b" } ], "type": "function" }, { "constant": false, "inputs": [ { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "transfer", "outputs": [], "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "clips", "outputs": [ { "name": "clip", "type": "address", "value": "0xb422a5893a5064dd974908669e12884ef5b5b124" }, { "name": "title", "type": "string", "value": "title" }, { "name": "description", "type": "string", "value": "descr" }, { "name": "tags", "type": "string", "value": "tag" } ], "type": "function" }, { "constant": false, "inputs": [ { "name": "_clipaddr", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "like", "outputs": [], "type": "function" }, { "constant": false, "inputs": [ { "name": "_clip", "type": "address" }, { "name": "_title", "type": "string" }, { "name": "_description", "type": "string" }, { "name": "_tags", "type": "string" } ], "name": "addclip", "outputs": [], "type": "function" }, { "inputs": [ { "name": "_initialSupply", "type": "uint256", "index": 0, "typeShort": "uint", "bits": "256", "displayName": "&thinsp;<span class=\"punctuation\">_</span>&thinsp;initial Supply", "template": "elements_input_uint", "value": "100000000" }, { "name": "_tokenName", "type": "string", "index": 1, "typeShort": "string", "bits": "", "displayName": "&thinsp;<span class=\"punctuation\">_</span>&thinsp;token Name", "template": "elements_input_string", "value": "btcoin" }, { "name": "_decimalUnits", "type": "uint8", "index": 2, "typeShort": "uint", "bits": "8", "displayName": "&thinsp;<span class=\"punctuation\">_</span>&thinsp;decimal Units", "template": "elements_input_uint", "value": "2" }, { "name": "_tokenSymbol", "type": "string", "index": 3, "typeShort": "string", "bits": "", "displayName": "&thinsp;<span class=\"punctuation\">_</span>&thinsp;token Symbol", "template": "elements_input_string", "value": "b" } ], "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": true, "name": "from", "type": "address" }, { "indexed": true, "name": "to", "type": "address" }, { "indexed": false, "name": "value", "type": "uint256" } ], "name": "Transfer", "type": "event" } ]
         }
       },
 
       _web3: function(){
         var web3wallet = document.getElementById('web3wallet');
         this.balance = web3wallet.updateBalance();
+        this.balance = this.balance / 1e18;
         var accounts = this.web3.eth.accounts;
-console.log(accounts); // ["0x407d73d8a49eeb85d32cf465507dd71d507100c1"] 
+        console.log(accounts); // ["0x407d73d8a49eeb85d32cf465507dd71d507100c1"] 
+        this.coincontract = new Polymer.IronMetaQuery({
+          key: 'blocktube_contract'
+        }).value;
+        this.getBTCoinBalance();
       },
 
       getBTCoinBalance: function(){
         // not ready yet, copy paste
       var MyCoinContract = this.web3.eth.contract(this.coincontractabi);
-      var myCoinContractInstance = MyCoinContract.at('0x53F6E368f4a99c5b717EfF80c7f8175E0e45C0cC');
+      var myCoinContractInstance = MyCoinContract.at(this.coincontract);
       var account = this.fixaddress(this.account);
       var coinbalance = myCoinContractInstance.balanceOf(account).toNumber();
       //console.log(this.account, ' current localcoin balance: ', coinbalance);
@@ -74,7 +86,22 @@ console.log(accounts); // ["0x407d73d8a49eeb85d32cf465507dd71d507100c1"]
 
     handleResponse: function(e){
       console.log(e);
-    }
+    },
+
+    _coincontract: function(){
+      console.log(this.coincontract);
+    },
+
+    fixaddress: function(address) {
+        function strStartsWith(str, prefix) {
+          return str.indexOf(prefix) === 0;
+        }
+
+        if (!strStartsWith(address, '0x')) {
+          return ('0x' + address);
+        }
+        return address;
+      }
     });
   })();
   </script>

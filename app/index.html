@@ -84,7 +84,6 @@
           <iron-icon icon="home"></iron-icon>
           <span>Home</span>
         </a>
-<<<<<<< HEAD
       </div>
       <a href="javascript:Excess.RouteManager.transitionTo('/user')">
         <img class="avatar" src="{{useravatar}}"></a>
@@ -94,25 +93,13 @@
       <div class="login"></div>
     </div>
 
-=======
->>>>>>> origin/master
+
 
         <a data-route="users" href="javascript:Excess.RouteManager.transitionTo('/upload')" on-click="onDataRouteClick">
           <iron-icon icon="info"></iron-icon>
           <span>Upload a clip</span>
         </a>
-        <!-- 
-          <a data-route="contact" href="/contact" on-click="onDataRouteClick">
-
-        <iron-icon icon="mail"></iron-icon>
-        <span>Contact</span>
-      </a>
-      -->
-      <!--   <a data-route="record" href="/record" on-click="onDataRouteClick">
-      <iron-icon icon="mail"></iron-icon>
-      <span>Record a clip</span>
-    </a>
-    -->
+       
   </paper-menu>
 </paper-scroll-header-panel>
 </paper-drawer-panel>
@@ -127,13 +114,13 @@
   <a href="http://www.google.be">
     <img src="images/bt-logo3.svg"></a>
 </div>
-<a href="/user">
+<a href="javascript:Excess.RouteManager.transitionTo('/user')">
   <img class="avatar" src="http://a3.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTIwNjA4NjMzNjc0ODkyODEy.jpg"></a>
 <a href="javascript:Excess.RouteManager.transitionTo('/upload')">
   <paper-icon-button icon="cloud-upload"></paper-icon-button>
 </a>
-<div class="login"></div>
-</div>
+<!-- <div class="login"></div>
+ --></div>
 
 <!-- Application name -->
 <excess-router-config
@@ -143,8 +130,7 @@
 
 <excess-route route="/:menu/(.*)?" menu="{{mainmenu}}"></excess-route>
 <excess-route route="/clip/:clipId" clip-id="{{clipId}}"></excess-route>
-<!-- <excess-route route="/" redirect-to="/home"></excess-route>
--->
+
 <!-- Main Content -->
 <div class="content">
 
@@ -167,19 +153,22 @@
   </paper-material>
 </template>
 
-<<<<<<< HEAD
-        <template is="dom-if" route="user" restamp>
-          <paper-material elevation="1">
-            <stube-user web3="{{web3}}" account="{{account}}"></stube-user>
-          </paper-material>
-        </template>
+<template is="dom-if" route="user" restamp>
+  <paper-material elevation="1">
+    <stube-user web3="{{web3}}" account="{{account}}"></stube-user>
+  </paper-material>
+</template>
 
- <template is="dom-if" route="clip" restamp>
-          <paper-material elevation="1">
-=======
+<template is="dom-if" route="backup" restamp>
+  <paper-material elevation="1">
+  <locals-backup account="{{account}}"></locals-backup>
+  </paper-material>
+</template>
+
+
 <template is="dom-if" route="clip" restamp>
   <paper-material elevation="1">
->>>>>>> origin/master
+
 
     <stube-item contract="{{clipId}}" web3="{{web3}}" account="{{account}}"></stube-item>
 
@@ -187,52 +176,13 @@
 
 </template>
 
-<!--  <div data-route="clip">
-<stube-item contract="{{params.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
-</div>
--->
+
 </lazy-pages>
 
-<!--    <iron-pages attr-for-selected="data-route" selected="{{appMenu}}">
-<section data-route="home">
-<paper-material elevation="1">
-<h1 class="paper-font-headline">Blocktube Channel - All clips</h1>
-<template is="dom-repeat" items="{{clips}}">
-  <stube-item on-item-tapped="gotoClip" listitem id="{{item.address}}" contract="{{item.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
-</template>
-</paper-material>
-</section>
-
-<section data-route="clip">
-<stube-item contract="{{params.address}}" web3="{{web3}}" account="{{account}}"></stube-item>
-</section>
-
-<section data-route="upload">
-<paper-material elevation="1">
-<stube-upload web3="{{web3}}" account="{{account}}"></stube-upload>
-</paper-material>
-</section>
-
-<section data-route="record">
-<paper-material elevation="1">
-RECORD a clip (with AUDIO)
-<stube-record-audio web3="{{web3}}" account="{{account}}"></stube-record-audio>
-</paper-material>
-</section>
-
-<section data-route="clip">
-<stube-clip ipfsobject="{{params.hash}}"></stube-clip>
-</section>
-
-</iron-pages>
--->
 </div>
 </div>
 
-<paper-material elevation="2">
 
-<a href="http://faucet.ma.cx:3000/donate/{{account}}">{{account}} balance {{balance}} WEI. Click to fill this account on faucet</a>
-</paper-material>
 
 </template>
 

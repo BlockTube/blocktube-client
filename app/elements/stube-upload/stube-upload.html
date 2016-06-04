@@ -33,6 +33,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <ipfs-upload id="ipfsupload" hash="{{cliphash}}" on-ipfs-hash-received="_setipfshash" on-upload-started="_uploadstart" host="/ip4/109.123.70.141/tcp/5001" on-upload-error="_uploaderror"></ipfs-upload>
 
+    <!-- SPonnet; we should give users the ability to enter an ipfs hash instead of uploading the file. -->
+    
+   <!--  <paper-input label="ipfs hash" bind-value="{{cliphash}}" label="ipfs hash"></paper-input>
+
+    <paper-button raised on-tap="_setipfshash"></paper-button>
+ -->
     <paper-progress  value="50" max="100"></paper-progress>
     <div id="videoland"></div>
      <canvas id="thecanvas" crossOrigin="anonymous">
